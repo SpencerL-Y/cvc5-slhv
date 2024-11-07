@@ -26,6 +26,13 @@ class TheorySLHV : public Theory {
 
     std::string identify() const override { return std::string("TheorySLHV"); }
 
+
+
+    //////  MAIN SOLVER
+    bool needsCheckLastEffort() override;
+    
+
+
 };
 }
 }
