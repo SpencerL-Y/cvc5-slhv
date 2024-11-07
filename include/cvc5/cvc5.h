@@ -4162,6 +4162,16 @@ class CVC5_EXPORT TermManager
    */
   Term mkSepNil(const Sort& sort);
   /**
+   * Create an SLHV nil term.
+   * @return The SLHV nil term.
+   */
+  Term mkSLHVNil(const Sort& sort);
+  /**
+   * Create an SLHV emp term.
+   * @return The SLHV emp term.
+   */
+  Term mkSLHVEmp();
+  /**
    * Create a String constant from a `std::string` which may contain SMT-LIB
    * compatible escape sequences like `\u1234` to encode unicode characters.
    * @param s               The string this constant represents.

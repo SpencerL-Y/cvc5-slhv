@@ -3210,6 +3210,30 @@ enum ENUM(Kind)
    */
   EVALUE(SEP_WAND),
 
+  /* Separation Logic with Heap Variables ---------------------------------- */
+
+  /**
+   * SLHV nil.
+   *
+   * - Create Term of this Kind with:
+   *
+   *   - Solver::mkSLHVNil()
+   *
+   */
+  EVALUE(SLHV_NIL),
+  /**
+   * SLHV emp
+   * 
+   * - Create Term of this Kind with:
+   * 
+   *    - Solver::mkSLHVEmp()
+   */
+  EVALUE(SLHV_EMP),
+  EVALUE(SLHV_DISJU),
+  EVALUE(SLHV_PTO),
+  EVALUE(SLHV_BLK),
+  EVALUE(SLHV_UNDEF),
+
   /* Sets ------------------------------------------------------------------ */
 
   /**

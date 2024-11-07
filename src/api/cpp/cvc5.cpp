@@ -324,6 +324,13 @@ const static std::unordered_map<Kind, std::pair<internal::Kind, std::string>>
         KIND_ENUM(Kind::SEP_PTO, internal::Kind::SEP_PTO),
         KIND_ENUM(Kind::SEP_STAR, internal::Kind::SEP_STAR),
         KIND_ENUM(Kind::SEP_WAND, internal::Kind::SEP_WAND),
+        /* SLHV ------------------------------------------------------------- */
+        // KIND_ENUM(Kind::SLHV_NIL, internal::Kind::SLHV_NIL),
+        // KIND_ENUM(Kind::SLHV_EMP, internal::Kind::SLHV_EMP),
+        // KIND_ENUM(Kind::SLHV_DISJU, internal::Kind::SLHV_DISJU),
+        // KIND_ENUM(Kind::SLHV_PTO, internal::Kind::SLHV_PTO),
+        // KIND_ENUM(Kind::SLHV_BLK, internal::Kind::SLHV_BLK),
+        // KIND_ENUM(Kind::SLHV_UNDEF, internal::Kind::SLHV_UNDEF),
         /* Sets ------------------------------------------------------------- */
         KIND_ENUM(Kind::SET_EMPTY, internal::Kind::SET_EMPTY),
         KIND_ENUM(Kind::SET_UNION, internal::Kind::SET_UNION),
@@ -728,6 +735,13 @@ const static std::unordered_map<internal::Kind,
         {internal::Kind::SEP_PTO, Kind::SEP_PTO},
         {internal::Kind::SEP_STAR, Kind::SEP_STAR},
         {internal::Kind::SEP_WAND, Kind::SEP_WAND},
+        /* SLHV ------------------------------------------------ */
+        // {internal::Kind::SLHV_NIL, Kind::SLHV_NIL},
+        // {internal::Kind::SLHV_EMP, Kind::SLHV_EMP},
+        // {internal::Kind::SLHV_PTO, Kind::SLHV_PTO},
+        // {internal::Kind::SLHV_DISJU, Kind::SLHV_DISJU},
+        // {internal::Kind::SLHV_BLK, Kind::SLHV_BLK},
+        // {internal::Kind::SLHV_UNDEF, Kind::SLHV_UNDEF},
         /* Sets ------------------------------------------------------------ */
         {internal::Kind::SET_EMPTY, Kind::SET_EMPTY},
         {internal::Kind::SET_UNION, Kind::SET_UNION},
@@ -6353,6 +6367,14 @@ Term TermManager::mkSepNil(const Sort& sort)
   return Term(this, res);
   ////////
   CVC5_API_TRY_CATCH_END;
+}
+
+Term TermManager::mkSLHVNil(const Sort& sort) {
+  // internal::Node res = d_nm->mkNullaryOperator(*sort.d_type, internal::Kind::SLHV_NIL);
+}
+
+Term TermManager::mkSLHVEmp() {
+
 }
 
 Term TermManager::mkString(const std::string& s, bool useEscSequences)
