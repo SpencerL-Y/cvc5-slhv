@@ -20,7 +20,7 @@ class TheorySLHV : public Theory {
     ~TheorySLHV();
 
     TheoryRewriter* getTheoryRewriter() override;
-    ProofChecker* getProofChecker() override;
+    ProofRuleChecker* getProofChecker() override;
     bool needsEqualityEngine(EeSetupInfo& esi) override;
     void finishInit() override;
 
