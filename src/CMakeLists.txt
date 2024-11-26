@@ -1091,12 +1091,6 @@ libcvc5_add_sources(
   theory/sep/theory_sep_rewriter.h
   theory/sep/theory_sep_type_rules.cpp
   theory/sep/theory_sep_type_rules.h
-  theory/slhv/theory_slhv.h
-  theory/slhv/theory_slhv.cpp
-  theory/slhv/theory_slhv_rewriter.h
-  theory/slhv/theory_slhv_rewriter.cpp
-  theory/slhv/theory_slhv_type_rules.h
-  theory/slhv/theory_slhv_type_rules.cpp
   theory/sets/cardinality_extension.cpp
   theory/sets/cardinality_extension.h
   theory/sets/infer_proof_cons.cpp
@@ -1416,7 +1410,6 @@ set(KINDS_FILES
   ${PROJECT_SOURCE_DIR}/src/theory/arrays/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/datatypes/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/sep/kinds
-  ${PROJECT_SOURCE_DIR}/src/theory/slhv/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/sets/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/bags/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/strings/kinds

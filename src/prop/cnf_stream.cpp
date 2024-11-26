@@ -116,6 +116,7 @@ void CnfStream::ensureLiteral(TNode n)
       n.toString().c_str(),
       n.getType().toString().c_str());
   Trace("cnf") << "ensureLiteral(" << n << ")\n";
+  std::cout << "ensureLiteral(" << n << ")\n";
   TimerStat::CodeTimer codeTimer(d_stats.d_cnfConversionTime, true);
   if (hasLiteral(n))
   {
@@ -152,6 +153,9 @@ SatLiteral CnfStream::newLiteral(TNode node,
                                  bool canEliminate)
 {
   Trace("cnf") << d_name << "::newLiteral(" << node << ", " << isTheoryAtom
+               << ")\n"
+               << push;
+  std::cout << d_name << "::newLiteral(" << node << ", " << isTheoryAtom
                << ")\n"
                << push;
   Assert(node.getKind() != Kind::NOT);
@@ -250,7 +254,7 @@ bool CnfStream::isNotifyFormula(TNode node) const
 SatLiteral CnfStream::convertAtom(TNode node)
 {
   Trace("cnf") << "convertAtom(" << node << ")\n";
-
+  std::cout << "convertAtom(" << node << ")\n";
   Assert(!hasLiteral(node)) << "atom already mapped!";
 
   bool theoryLiteral = false;
@@ -485,7 +489,8 @@ SatLiteral CnfStream::toCNF(TNode node, bool negated)
 {
   Trace("cnf") << "toCNF(" << node
                << ", negated = " << (negated ? "true" : "false") << ")\n";
-
+  std::cout << "toCNF(" << node
+               << ", negated = " << (negated ? "true" : "false") << ")\n";
   TNode cur;
   SatLiteral nodeLit;
   std::vector<TNode> visit;
@@ -727,6 +732,9 @@ void CnfStream::convertAndAssertIte(TNode node, bool negated)
 void CnfStream::convertAndAssert(TNode node, bool removable, bool negated)
 {
   Trace("cnf") << "convertAndAssert(" << node
+               << ", negated = " << (negated ? "true" : "false")
+               << ", removable = " << (removable ? "true" : "false") << ")\n";
+  std::cout << "convertAndAssert(" << node
                << ", negated = " << (negated ? "true" : "false")
                << ", removable = " << (removable ? "true" : "false") << ")\n";
   d_removable = removable;

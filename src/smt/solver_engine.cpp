@@ -790,6 +790,7 @@ Result SolverEngine::checkSat(const std::vector<Node>& assumptions)
 
 Result SolverEngine::checkSatInternal(const std::vector<Node>& assumptions)
 {
+  std::cout << "begin SolverEngine::checkSatInternal()" << std::endl;
   ensureWellFormedTerms(assumptions, "checkSat");
 
   Trace("smt") << "SolverEngine::checkSat(" << assumptions << ")" << endl;
@@ -839,6 +840,7 @@ Result SolverEngine::checkSatInternal(const std::vector<Node>& assumptions)
 
   // set the filename on the result
   const std::string& filename = d_env->getOptions().driver.filename;
+  std::cout << "end SolverEngine::checkSatInternal()" << std::endl;
   return Result(r, filename);
 }
 

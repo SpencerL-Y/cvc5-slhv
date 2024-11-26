@@ -116,17 +116,20 @@ void SmtSolver::interrupt()
 
 Result SmtSolver::checkSatInternal()
 {
+  std::cout << "SmtSolver checkSatInternal()" << std::endl;
   // call the prop engine to check sat
   return d_propEngine->checkSat();
 }
 
 void SmtSolver::preprocess(preprocessing::AssertionPipeline& ap)
 {
+  std::cout << "begin SmtSolver::preprocess()" << std::endl;
   TimerStat::CodeTimer paTimer(d_stats.d_processAssertionsTime);
   d_env.getResourceManager()->spendResource(Resource::PreprocessStep);
 
   // process the assertions with the preprocessor
   d_pp.process(ap);
+  std::cout << "end SmtSolver::preprocess()" << std::endl;
 
   // end: INVARIANT to maintain: no reordering of assertions or
   // introducing new ones
@@ -134,6 +137,7 @@ void SmtSolver::preprocess(preprocessing::AssertionPipeline& ap)
 
 void SmtSolver::assertToInternal(preprocessing::AssertionPipeline& ap)
 {
+  std::cout << "begin SmtSolver::assertToInternal()" << std::endl;
   // carry information about soundness to the theory engine we are sending to
   if (ap.isRefutationUnsound())
   {
@@ -180,6 +184,7 @@ void SmtSolver::assertToInternal(preprocessing::AssertionPipeline& ap)
       d_ppSkolemMap[newIndex] = k.second;
     }
   }
+  std::cout << "end SmtSolver::assertToInternal()" << std::endl;
 }
 
 const context::CDList<Node>& SmtSolver::getPreprocessedAssertions() const

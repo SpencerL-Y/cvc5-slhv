@@ -370,8 +370,11 @@ void TheoryProxy::notifySatClause(const SatClause& clause)
   }
 }
 
-void TheoryProxy::enqueueTheoryLiteral(const SatLiteral& l) {
+void TheoryProxy::enqueueTheoryLiteral(const SatLiteral& l) { 
+  int *p = nullptr;
+  int a = *(p+1);
   Node literalNode = d_cnfStream->getNode(l);
+  std::cout << "theory-proxy enqueueing theory literal" << l << " " << literalNode << std::endl;
   Trace("theory-proxy") << "enqueueing theory literal " << l << " "
                         << literalNode << std::endl;
   Assert(!literalNode.isNull());
@@ -519,6 +522,7 @@ void TheoryProxy::getSkolems(TNode node,
 void TheoryProxy::notifySatLiteral(Node n)
 {
   // notify the preregister utility, which may trigger new preregistrations
+  std::cout << "void TheoryProxy::notifySatLiteral(Node n)" << n << std::endl;
   d_prr->notifySatLiteral(n);
 }
 

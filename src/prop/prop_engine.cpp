@@ -161,10 +161,13 @@ void PropEngine::assertInputFormulas(
 {
   Assert(!d_inCheckSat) << "Sat solver in solve()!";
   d_theoryProxy->notifyInputFormulas(assertions, skolemMap);
+  std::cout << "Sat solver in solve()!" << std::endl;
+  d_theoryProxy->notifyInputFormulas(assertions, skolemMap);
   int64_t natomsPre = d_cnfStream->d_stats.d_numAtoms.get();
   for (const Node& node : assertions)
   {
     Trace("prop") << "assertFormula(" << node << ")" << std::endl;
+    std::cout << "assertFormula(" << node << ")" << std::endl;
     assertInternal(theory::InferenceId::INPUT, node, false, false, true);
   }
   int64_t natomsPost = d_cnfStream->d_stats.d_numAtoms.get();
@@ -252,9 +255,11 @@ void PropEngine::assertInternal(theory::InferenceId id,
                                 bool input,
                                 ProofGenerator* pg)
 {
+  std::cout << "begin assertInternal()" << std::endl;
   bool addAssumption = false;
   if (isProofEnabled())
   {
+    std::cout << "first branch" << std::endl;
     if (input
         && options().smt.unsatCoresMode == options::UnsatCoresMode::ASSUMPTIONS)
     {
@@ -271,11 +276,13 @@ void PropEngine::assertInternal(theory::InferenceId id,
            && options().smt.unsatCoresMode
                   == options::UnsatCoresMode::ASSUMPTIONS)
   {
+    std::cout << "second branch" << std::endl;
     d_cnfStream->ensureLiteral(node);
     addAssumption = true;
   }
   else
   {
+    std::cout << "third branch" << std::endl;
     d_cnfStream->convertAndAssert(node, removable, negated);
   }
   if (addAssumption)
@@ -289,6 +296,7 @@ void PropEngine::assertInternal(theory::InferenceId id,
       d_assumptions.push_back(node);
     }
   }
+  std::cout << "end assertInternal()" << std::endl;
 }
 
 void PropEngine::assertLemmasInternal(
@@ -425,6 +433,7 @@ void PropEngine::outputIncompleteReason(UnknownExplanation uexp,
 }
 
 Result PropEngine::checkSat() {
+  std::cout << "PropEngine::checkSat()" << std::endl;
   Assert(!d_inCheckSat) << "Sat solver in solve()!";
   Trace("prop") << "PropEngine::checkSat()" << std::endl;
 
@@ -439,28 +448,39 @@ Result PropEngine::checkSat() {
   }
 
   // Note this currently ignores conflicts (a dangerous practice).
+  std::cout << "begin d_theoryProxy->presolve()" << std::endl;
   d_theoryProxy->presolve();
+  std::cout << "end d_theoryProxy->presolve()" << std::endl;
 
   // Reset the interrupted flag
   d_interrupted = false;
 
   // Check the problem
+  std::cout << "begin d_satSolver solve()" << std::endl;
   SatValue result;
   if (d_assumptions.size() == 0)
   {
+    std::cout << "d_satSolver unsatcore not enabled" << std::endl;
     result = d_satSolver->solve();
   }
   else
   {
+    std::cout << "d_satSolver unsatcore enabled" << std::endl;
     std::vector<SatLiteral> assumptions;
+    std::cout << "begin assumptions" << std::endl;
     for (const Node& node : d_assumptions)
     {
+      std::cout << node << std::endl;
       assumptions.push_back(d_cnfStream->getLiteral(node));
     }
+    std::cout << "end assumptions" << std::endl;
     result = d_satSolver->solve(assumptions);
   }
+  std::cout << "end d_satSolver solve()" << std::endl;
 
+  std::cout << "begin d_theoryProxy->postsolve()" << std::endl;
   d_theoryProxy->postsolve(result);
+  std::cout << "end d_theoryProxy->postsolve()" << std::endl;
 
   if( result == SAT_VALUE_UNKNOWN ) {
     ResourceManager* rm = resourceManager();

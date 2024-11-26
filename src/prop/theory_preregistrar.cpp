@@ -74,6 +74,7 @@ void TheoryPreregistrar::notifySatLiteral(TNode n)
   if (options().prop.preRegisterMode == options::PreRegisterMode::EAGER)
   {
     Trace("prereg") << "preregister (eager): " << n << std::endl;
+    std::cout << "preregister (eager): " << n << std::endl;
     d_theoryEngine->preRegister(n);
     // cache for registration
     d_sat_literals.emplace_back(n, d_env.getContext()->getLevel());

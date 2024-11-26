@@ -229,6 +229,7 @@ void TheoryArith::ppStaticLearn(TNode n, NodeBuilder& learned)
 bool TheoryArith::preCheck(Effort level)
 {
   Trace("arith-check") << "TheoryArith::preCheck " << level << std::endl;
+  std::cout << "TheoryArith::preCheck " << level << std::endl;
   bool newFacts = !done();
   return d_internal.preCheck(level, newFacts);
 }
@@ -237,6 +238,7 @@ void TheoryArith::postCheck(Effort level)
 {
   d_im.reset();
   Trace("arith-check") << "TheoryArith::postCheck " << level << std::endl;
+  std::cout << "TheoryArith::postCheck " << level << std::endl;
   if (Theory::fullEffort(level))
   {
     // Make sure we don't have old lemmas floating around. This can happen if we
@@ -313,6 +315,9 @@ bool TheoryArith::preNotifyFact(
     TNode atom, bool pol, TNode fact, bool isPrereg, bool isInternal)
 {
   Trace("arith-check") << "TheoryArith::preNotifyFact: " << fact
+                       << ", isPrereg=" << isPrereg
+                       << ", isInternal=" << isInternal << std::endl;
+  std::cout << "TheoryArith::preNotifyFact: " << fact
                        << ", isPrereg=" << isPrereg
                        << ", isInternal=" << isInternal << std::endl;
   // We do not assert to the equality engine of arithmetic in the standard way,

@@ -91,6 +91,7 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
    */
   void notify_assignment(int lit, bool is_fixed) override
   {
+    std::cout << "notify_assignment()" << std::endl;
     if (d_found_solution)
     {
       return;
@@ -115,7 +116,10 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
         << " (fixed: " << is_fixed << ", level: " << d_decisions.size()
         << ", level_intro: " << info.level_intro
         << ", level_user: " << current_user_level() << ")" << std::endl;
-
+    std::cout << "notif::assignment: [" << (is_decision ? "d" : "p") << "] " << slit
+        << " (fixed: " << is_fixed << ", level: " << d_decisions.size()
+        << ", level_intro: " << info.level_intro
+        << ", level_user: " << current_user_level() << ")" << std::endl;
     // Save decision variables
     if (is_decision)
     {
@@ -144,6 +148,8 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
         Trace("cadical::propagator") << "enqueue: " << slit << std::endl;
         Trace("cadical::propagator")
             << "node:    " << d_proxy->getNode(slit) << std::endl;
+        std::cout << "enqueue: " << slit << std::endl;
+        std::cout << "node:    " << d_proxy->getNode(slit) << std::endl;
         d_proxy->enqueueTheoryLiteral(slit);
       }
     }
@@ -175,6 +181,8 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
   void notify_backtrack(size_t level) override
   {
     Trace("cadical::propagator") << "notif::backtrack: " << level << std::endl;
+
+    std::cout << "notif::backtrack: " << level << std::endl;
 
     // CaDiCaL may notify us about backtracks of decisions that we were not
     // notified about. We can safely ignore them.
@@ -232,10 +240,12 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
     {
       SatLiteral lit = *it;
       Trace("cadical::propagator") << "re-enqueue: " << lit << std::endl;
+      std::cout << "re-enqueue: " << lit << std::endl;
       d_proxy->enqueueTheoryLiteral(lit);
       d_assignments.push_back(lit);
     }
     Trace("cadical::propagator") << "notif::backtrack end" << std::endl;
+    std::cout << "notif::backtrack end" << std::endl;
   }
 
   /**
@@ -812,10 +822,12 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
    */
   void renotify_fixed()
   {
+    std::cout << "renotify_fixed" << std::endl;
     for (const auto& lit : d_renotify_fixed)
     {
       Trace("cadical::propagator")
           << "re-enqueue (user pop): " << lit << std::endl;
+      std::cout << "re-enqueue (user pop): " << lit << std::endl;
       // Make sure to pre-register the re-enqueued theory literal
       d_proxy->notifySatLiteral(d_proxy->getNode(lit));
       // Re-enqueue fixed theory literal
@@ -1077,9 +1089,11 @@ void CadicalSolver::setResourceLimit(ResourceManager* resmgr)
 
 SatValue CadicalSolver::_solve(const std::vector<SatLiteral>& assumptions)
 {
+  std::cout << "begin cadical _solve" << std::endl;
   if (d_propagator)
   {
     Trace("cadical::propagator") << "solve start" << std::endl;
+    std::cout << "solve start" << std::endl;
     d_propagator->renotify_fixed();
   }
   TimerStat::CodeTimer codeTimer(d_statistics.d_solveTime);
@@ -1091,6 +1105,7 @@ SatValue CadicalSolver::_solve(const std::vector<SatLiteral>& assumptions)
     {
       Trace("cadical::propagator")
           << "assume activation lit: " << ~lit << std::endl;
+      std::cout << "assume activation lit: " << ~lit << std::endl;
       d_solver->assume(toCadicalLit(~lit));
     }
   }
@@ -1100,6 +1115,7 @@ SatValue CadicalSolver::_solve(const std::vector<SatLiteral>& assumptions)
     if (d_propagator)
     {
       Trace("cadical::propagator") << "assume: " << lit << std::endl;
+      std::cout << "assume: " << lit << std::endl;
     }
     d_solver->assume(toCadicalLit(lit));
     d_assumptions.push_back(lit);
@@ -1108,7 +1124,9 @@ SatValue CadicalSolver::_solve(const std::vector<SatLiteral>& assumptions)
   {
     d_propagator->in_search(true);
   }
+  std::cout << "begin d_solver->solve()" << std::endl;
   res = toSatValue(d_solver->solve());
+  std::cout << "end d_solver->solve()" << std::endl;
   if (d_propagator)
   {
     Assert(res != SAT_VALUE_TRUE || d_propagator->done());
@@ -1117,6 +1135,7 @@ SatValue CadicalSolver::_solve(const std::vector<SatLiteral>& assumptions)
   }
   ++d_statistics.d_numSatCalls;
   d_inSatMode = (res == SAT_VALUE_TRUE);
+  std::cout << "end cadical _solve" << std::endl;
   return res;
 }
 
@@ -1185,6 +1204,7 @@ SatValue CadicalSolver::solve(long unsigned int&)
 
 SatValue CadicalSolver::solve(const std::vector<SatLiteral>& assumptions)
 {
+  std::cout << "CadicalSolver::solve()" << std::endl;
   return _solve(assumptions);
 }
 

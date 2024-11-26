@@ -319,6 +319,8 @@ void TheoryEngine::preRegister(TNode preprocessed) {
       // the atom should not have free variables
       Trace("theory") << "TheoryEngine::preRegister: " << preprocessed
                       << std::endl;
+      std::cout << "TheoryEngine::preRegister: " << preprocessed
+                      << std::endl;
       if (Configuration::isAssertionBuild())
       {
         std::unordered_set<Node> fvs;

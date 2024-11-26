@@ -42,6 +42,7 @@ SmtDriver::SmtDriver(Env& env, SmtSolver& smt, ContextManager* ctx)
 
 Result SmtDriver::checkSat(const std::vector<Node>& assumptions)
 {
+  std::cout << "begin SmtDriver::checkSat()" << std::endl;
   bool hasAssumptions = !assumptions.empty();
   if (d_ctx)
   {
@@ -112,6 +113,7 @@ Result SmtDriver::checkSat(const std::vector<Node>& assumptions)
   {
     d_ctx->notifyCheckSatResult(hasAssumptions);
   }
+  std::cout << "end SmtDriver::checkSat()" << std::endl;
   return result;
 }
 
@@ -156,6 +158,7 @@ SmtDriverSingleCall::SmtDriverSingleCall(Env& env,
 
 Result SmtDriverSingleCall::checkSatNext(preprocessing::AssertionPipeline& ap)
 {
+  std::cout << "SmtDriverSingleCall::checkSatNext()" << std::endl;
   // preprocess
   d_smt.preprocess(ap);
   // assert to internal
@@ -165,7 +168,7 @@ Result SmtDriverSingleCall::checkSatNext(preprocessing::AssertionPipeline& ap)
   // handle preprocessing-specific modifications to result
   if (ap.isNegated())
   {
-    Trace("smt") << "SmtSolver::process global negate " << result << std::endl;
+    Trace("smt") << "begin SmtSolver::process global negate " << result << std::endl;
     if (result.getStatus() == Result::UNSAT)
     {
       result = Result(Result::SAT);
@@ -191,6 +194,7 @@ Result SmtDriverSingleCall::checkSatNext(preprocessing::AssertionPipeline& ap)
     }
     Trace("smt") << "SmtSolver::global negate returned " << result << std::endl;
   }
+  std::cout << "end SmtDriverSingleCall::checkSatNext()" << std::endl;
   return result;
 }
 
