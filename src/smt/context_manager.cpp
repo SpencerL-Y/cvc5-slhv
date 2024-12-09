@@ -53,11 +53,13 @@ void ContextManager::notifyResetAssertions()
 
 void ContextManager::notifyCheckSat(bool hasAssumptions)
 {
+  std::cout << "begin ContextManager::notifyCheckSat" << std::endl;
   // push if there are assumptions
   if (hasAssumptions)
   {
     internalPush();
   }
+  std::cout << "end ContextManager::notifyCheckSat" << std::endl;
 }
 
 void ContextManager::notifyCheckSatResult(bool hasAssumptions)

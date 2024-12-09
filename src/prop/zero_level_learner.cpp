@@ -330,6 +330,7 @@ modes::LearnedLitType ZeroLevelLearner::computeLearnedLiteralType(
   }
   Trace("level-zero-assert")
       << "Level zero assert: " << lit << ", type=" << ltype << std::endl;
+  std::cout << "Level zero assert: " << lit << ", type=" << ltype << std::endl;
   return ltype;
 }
 

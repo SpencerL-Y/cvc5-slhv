@@ -81,6 +81,7 @@ void TheoryProxy::finishInit(CDCLTSatSolver* ss, CnfStream* cs)
 {
   // make the decision engine, which requires pointers to the SAT solver and CNF
   // stream
+  std::cout << "begin TheoryProxy::finishInit" << std::endl;
   options::DecisionMode dmode = options().decision.decisionMode;
   if (dmode == options::DecisionMode::JUSTIFICATION
       || dmode == options::DecisionMode::STOPONLY)
@@ -109,15 +110,18 @@ void TheoryProxy::finishInit(CDCLTSatSolver* ss, CnfStream* cs)
     d_lemip.reset(new LemmaInprocess(d_env, cs, *d_zll.get()));
   }
   d_cnfStream = cs;
+  std::cout << "end TheoryProxy::finishInit" << std::endl;
 }
 
 void TheoryProxy::presolve()
 {
   Trace("theory-proxy") << "TheoryProxy::presolve: begin" << std::endl;
+  std::cout << "TheoryProxy::presolve: begin" << std::endl;
   d_decisionEngine->presolve();
   d_theoryEngine->presolve();
   d_stopSearch = false;
   Trace("theory-proxy") << "TheoryProxy::presolve: end" << std::endl;
+  std::cout << "TheoryProxy::presolve: end" << std::endl;
   d_inSolve = true;
 }
 
@@ -140,6 +144,7 @@ void TheoryProxy::notifyInputFormulas(
     const std::vector<Node>& assertions,
     std::unordered_map<size_t, Node>& skolemMap)
 {
+  std::cout << "TheoryProxy::notifyInputFormulas" << std::endl;
   // notify the theory engine of preprocessed assertions
   d_theoryEngine->notifyPreprocessedAssertions(assertions);
   // Now, notify the theory proxy of the assertions and skolem definitions.
@@ -183,6 +188,7 @@ void TheoryProxy::notifyAssertion(Node a,
                                   bool isLemma,
                                   bool local)
 {
+  std::cout << "TheoryProxy::notifyAssertion" << std::endl;
   // ignore constants
   if (a.isConst())
   {
@@ -209,6 +215,7 @@ void TheoryProxy::notifyAssertion(Node a,
 
 void TheoryProxy::theoryCheck(theory::Theory::Effort effort) {
   Trace("theory-proxy") << "TheoryProxy: check " << effort << std::endl;
+  std::cout << "TheoryProxy: check " << effort << std::endl;
   d_activatedSkDefs = false;
   // check with the preregistrar
   d_prr->check();
@@ -241,6 +248,7 @@ void TheoryProxy::theoryCheck(theory::Theory::Effort effort) {
     }
     // now, assert to theory engine
     Trace("prereg") << "assert: " << assertion << std::endl;
+    std::cout << "assert: " << assertion << "level: " << alevel << std::endl;
     d_theoryEngine->assertFact(assertion);
     if (d_trackActiveSkDefs)
     {
@@ -264,6 +272,7 @@ void TheoryProxy::theoryCheck(theory::Theory::Effort effort) {
         if (effort == theory::Theory::EFFORT_FULL)
         {
           Trace("theory-proxy") << "...change check to STANDARD!" << std::endl;
+          std::cout << "...change check to STANDARD!" << std::endl;
           effort = theory::Theory::EFFORT_STANDARD;
         }
         d_activatedSkDefs = true;
@@ -282,6 +291,7 @@ void TheoryProxy::theoryPropagate(std::vector<SatLiteral>& output) {
   d_theoryEngine->getPropagatedLiterals(outputNodes);
   for (unsigned i = 0, i_end = outputNodes.size(); i < i_end; ++ i) {
     Trace("prop-explain") << "theoryPropagate() => " << outputNodes[i] << std::endl;
+    std::cout << "theoryPropagate() => " << outputNodes[i] << std::endl;
     output.push_back(d_cnfStream->getLiteral(outputNodes[i]));
   }
 }
@@ -289,7 +299,7 @@ void TheoryProxy::theoryPropagate(std::vector<SatLiteral>& output) {
 void TheoryProxy::explainPropagation(SatLiteral l, SatClause& explanation) {
   TNode lNode = d_cnfStream->getNode(l);
   Trace("prop-explain") << "explainPropagation(" << lNode << ")" << std::endl;
-
+  std::cout << "explainPropagation(" << lNode << ")" << std::endl;
   TrustNode tte = d_theoryEngine->getExplanation(lNode);
   Node theoryExplanation = tte.getNode();
   if (d_env.isSatProofProducing())
@@ -362,6 +372,8 @@ void TheoryProxy::notifySatClause(const SatClause& clause)
     Trace("theory-proxy")
         << "TheoryProxy::notifySatClause: Clause from SAT solver: " << clns
         << std::endl;
+    std::cout << "TheoryProxy::notifySatClause: Clause from SAT solver: " << clns
+        << std::endl;
     // notify the plugins
     for (Plugin* p : plugins)
     {
@@ -371,10 +383,8 @@ void TheoryProxy::notifySatClause(const SatClause& clause)
 }
 
 void TheoryProxy::enqueueTheoryLiteral(const SatLiteral& l) { 
-  int *p = nullptr;
-  int a = *(p+1);
   Node literalNode = d_cnfStream->getNode(l);
-  std::cout << "theory-proxy enqueueing theory literal" << l << " " << literalNode << std::endl;
+  std::cout << "theory-proxy enqueueing theory literal " << l << " " << literalNode << std::endl;
   Trace("theory-proxy") << "enqueueing theory literal " << l << " "
                         << literalNode << std::endl;
   Assert(!literalNode.isNull());
@@ -386,6 +396,7 @@ SatLiteral TheoryProxy::getNextDecisionRequest(bool& requirePhase,
                                                bool& stopSearch)
 {
   Trace("theory-proxy") << "TheoryProxy: getNextDecisionRequest" << std::endl;
+  std::cout << "TheoryProxy: getNextDecisionRequest" << std::endl;
   requirePhase = false;
   stopSearch = false;
   SatLiteral res = undefSatLiteral;
@@ -393,6 +404,7 @@ SatLiteral TheoryProxy::getNextDecisionRequest(bool& requirePhase,
   if (!n.isNull())
   {
     Trace("theory-proxy") << "... return next theory decision" << std::endl;
+    std::cout << "... return next theory decision" << std::endl;
     requirePhase = true;
     res = d_cnfStream->getLiteral(n);
   }
@@ -404,6 +416,7 @@ SatLiteral TheoryProxy::getNextDecisionRequest(bool& requirePhase,
     if (d_stopSearch.get())
     {
       Trace("theory-proxy") << "...stop search, finished" << std::endl;
+      std::cout << "...stop search, finished" << std::endl;
       stopSearch = true;
     }
     else
@@ -413,10 +426,12 @@ SatLiteral TheoryProxy::getNextDecisionRequest(bool& requirePhase,
       {
         Trace("theory-proxy")
             << "  ***  Decision Engine stopped search *** " << std::endl;
+        std::cout << "  ***  Decision Engine stopped search *** " << std::endl;
       }
       else
       {
         Trace("theory-proxy") << "...return next decision" << std::endl;
+        std::cout << "...return next decision" << std::endl;
       }
     }
   }
@@ -438,6 +453,8 @@ bool TheoryProxy::theoryNeedCheck() const
   // channel was used.
   bool needCheck = d_theoryEngine->needCheck();
   Trace("theory-proxy") << "TheoryProxy: theoryNeedCheck returns " << needCheck
+                        << std::endl;
+  std::cout << "TheoryProxy: theoryNeedCheck returns " << needCheck
                         << std::endl;
   return needCheck;
 }

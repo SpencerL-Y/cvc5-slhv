@@ -260,6 +260,7 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
   bool cb_check_found_model(const std::vector<int>& model) override
   {
     Trace("cadical::propagator") << "cb::check_found_model" << std::endl;
+    std::cout << "cb::check_found_model" << std::endl; 
     bool recheck = false;
 
     if (d_found_solution)
@@ -365,6 +366,7 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
    */
   int cb_decide() override
   {
+    std::cout << "cb_decide" << std::endl;
     if (d_found_solution)
     {
       return 0;
@@ -431,6 +433,7 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
       return 0;
     }
     Trace("cadical::propagator") << "cb::propagate" << std::endl;
+    std::cout << "cb::propagate" << std::endl;
     if (d_propagations.empty())
     {
       // Only propagate if all activation literals are processed. Activation
@@ -851,7 +854,7 @@ class CadicalPropagator : public CaDiCaL::ExternalPropagator
     d_proxy->theoryPropagate(propagated_lits);
     Trace("cadical::propagator")
         << "new propagations: " << propagated_lits.size() << std::endl;
-
+    std::cout << "new propagations: " << propagated_lits.size() << std::endl;
     for (const auto& lit : propagated_lits)
     {
       Trace("cadical::propagator") << "new propagation: " << lit << std::endl;

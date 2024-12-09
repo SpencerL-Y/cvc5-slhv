@@ -659,6 +659,7 @@ inline bool     Solver::addClause       (Lit p, Lit q, Lit r, bool removable, Cl
 inline bool     Solver::locked          (const Clause& c) const { return value(c[0]) == l_True && isPropagatedBy(var(c[0]), c); }
 inline void Solver::newDecisionLevel()
 {
+  std::cout << "newDecisionLevel" << std::endl;
   trail_lim.push(trail.size());
   flipped.push(false);
   d_context->push();

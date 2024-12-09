@@ -1,0 +1,45 @@
+# kinds                                                               -*- sh -*-
+#
+# For documentation on this file format, please refer to
+# src/theory/builtin/kinds.
+#
+
+theory THEORY_SLHV ::cvc5::internal::theory::slhv::TheorySLHV "theory/slhv/theory_slhv.h"
+typechecker "theory/slhv/theory_slhv_type_rules.h"
+
+properties polite stable-infinite parametric
+properties check presolve
+
+rewriter ::cvc5::internal::theory::slhv::TheorySLHVRewriter "theory/slhv/theory_slhv_rewriter.h"
+
+operator INTHEAP_TYPE 2 "intheap type"
+cardinality INTHEAP_TYPE \
+    "::cvc5::internal::theory::slhv::IntHeapProperties::computeCardinality(%TYPE%)" \
+    "theory/slhv/theory_slhv_type_rules.h"
+well-founded INTHEAP_TYPE \
+    "::cvc5::internal::theory::slhv::IntHeapProperties::isWellFounded(%TYPE%)" \
+    "::cvc5::internal::theory::slhv::IntHeapProperties::mkGroundTerm(%TYPE%)" \
+    "theory/slhv/theory_slhv_type_rules.h"
+
+enumerator INTHEAP_TYPE \
+    "::cvc5::internal::theory::slhv::IntHeapEnumerator" \
+    "theory/slhv/type_enumerator.h"
+
+
+nullaryoperator SLHV_NIL "slhv nil"
+nullaryoperator SLHV_EMP "slhv emp"
+operator SLHV_PTO 2 "points to term"
+operator SLHV_BLK 3 "blk term"
+operator SLHV_DISJU 2: "heap disjoint union term"
+operator SLHV_UNDEF 1 "heap undefined term"
+
+typerule SLHV_NIL ::cvc5::internal::theory::slhv::SLHVNilTypeRule
+typerule SLHV_EMP ::cvc5::internal::theory::slhv::SLHVEmpTypeRule
+typerule SLHV_PTO ::cvc5::internal::theory::slhv::SLHVPtoTypeRule
+typerule SLHV_BLK ::cvc5::internal::theory::slhv::SLHVBlkTypeRule
+typerule SLHV_DISJU ::cvc5::internal::theory::slhv::SLHVDisjUTypeRule
+typerule SLHV_UNDEF ::cvc5::internal::theory::slhv::SLHVUndefTypeRule
+
+
+
+endtheory

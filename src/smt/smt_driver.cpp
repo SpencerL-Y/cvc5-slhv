@@ -58,6 +58,7 @@ Result SmtDriver::checkSat(const std::vector<Node>& assumptions)
     // make the check, where notice smt engine should be fully inited by now
 
     Trace("smt") << "SmtSolver::check()" << std::endl;
+    std::cout << "SmtSolver::check()" << std::endl;
 
     ResourceManager* rm = d_env.getResourceManager();
     // if we are already out of (cumulative) resources

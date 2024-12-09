@@ -81,6 +81,7 @@ PropEngine::PropEngine(Env& env, TheoryEngine* te)
       d_stats(statisticsRegistry())
 {
   Trace("prop") << "Constructing the PropEngine" << std::endl;
+  std::cout <<  "Constructing the PropEngine" << std::endl;
   context::UserContext* userContext = d_env.getUserContext();
 
   if (options().prop.satSolver == options::SatSolverMode::MINISAT)

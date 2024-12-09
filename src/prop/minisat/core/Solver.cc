@@ -849,7 +849,8 @@ int Solver::analyze(CRef confl, vec<Lit>& out_learnt, int& out_btlevel)
 {
   Trace("pf::sat") << "Solver::analyze: starting with " << confl
                    << " with decision level " << decisionLevel() << "\n";
-
+  std::cout << "Solver::analyze: starting with " << confl
+                   << " with decision level " << decisionLevel() << "\n";
   int pathC = 0;
   Lit p = lit_Undef;
 
@@ -1110,9 +1111,15 @@ void Solver::analyzeFinal(Lit p, vec<Lit>& out_conflict)
 
 void Solver::uncheckedEnqueue(Lit p, CRef from)
 {
-  if (TraceIsOn("minisat"))
+  // if (TraceIsOn("minisat"))
+  if(true)
   {
     Trace("minisat") << "unchecked enqueue of " << p << " ("
+                     << trail_index(var(p)) << ") trail size is "
+                     << trail.size() << " cap is " << trail.capacity()
+                     << ", assertion level is " << assertionLevel
+                     << ", reason is " << from << ", ";
+    std::cout << "unchecked enqueue of " << p << " ("
                      << trail_index(var(p)) << ") trail size is "
                      << trail.size() << " cap is " << trail.capacity()
                      << ", assertion level is " << assertionLevel
@@ -1120,19 +1127,23 @@ void Solver::uncheckedEnqueue(Lit p, CRef from)
     if (from == CRef_Lazy)
     {
       Trace("minisat") << "CRef_Lazy";
+      std::cout << "CRef_Lazy";
     }
     else if (from == CRef_Undef)
     {
       Trace("minisat") << "CRef_Undef";
+      std::cout << "CRef_Undef";
     }
     else
     {
       for (unsigned i = 0, size = ca[from].size(); i < size; ++i)
       {
         Trace("minisat") << ca[from][i] << " ";
+        std::cout << ca[from][i] << " ";
       }
     }
     Trace("minisat") << "\n";
+    std::cout << "\n";
   }
   Assert(value(p) == l_Undef);
   Assert(var(p) < nVars());
@@ -1149,6 +1160,7 @@ void Solver::uncheckedEnqueue(Lit p, CRef from)
 
 CRef Solver::propagate(TheoryCheckType type)
 {
+    std::cout << "begin propagate" << std::endl;
     CRef confl = CRef_Undef;
     recheck = false;
     theoryConflict = false;
@@ -1166,6 +1178,7 @@ CRef Solver::propagate(TheoryCheckType type)
     // If this is the final check, no need for Boolean propagation and
     // theory propagation
     if (type == CHECK_FINAL) {
+      std::cout << "final check**********" << std::endl;
       // Do the theory check
       theoryCheck(cvc5::internal::theory::Theory::EFFORT_FULL);
       // Pick up the theory propagated literals (there could be some,
@@ -1175,9 +1188,11 @@ CRef Solver::propagate(TheoryCheckType type)
       if (lemmas.size() > 0) {
         recheck = true;
         confl = updateLemmas();
+        std::cout << "end propagate" << std::endl;
         return confl;
       } else {
         recheck = d_proxy->theoryNeedCheck();
+        std::cout << "end propagate" << std::endl;
         return confl;
       }
     }
@@ -1228,10 +1243,12 @@ CRef Solver::propagate(TheoryCheckType type)
           }
         }
     } while (confl == CRef_Undef && qhead < trail.size());
+    std::cout << "end propagate" << std::endl;
     return confl;
 }
 
 void Solver::propagateTheory() {
+  std::cout << "begin Solver::propagateTheory()" << std::endl;
   SatClause propagatedLiteralsClause;
   // Doesn't actually call propagate(); that's done in theoryCheck() now that combination
   // is online.  This just incorporates those propagations previously discovered.
@@ -1242,8 +1259,10 @@ void Solver::propagateTheory() {
 
   int oldTrailSize = trail.size();
   Trace("minisat") << "old trail size is " << oldTrailSize << ", propagating " << propagatedLiterals.size() << " lits..." << std::endl;
+  std::cout << "minisat" << " old trail size is " << oldTrailSize << ", propagating " << propagatedLiterals.size() << " lits..." << std::endl;
   for (unsigned i = 0, i_end = propagatedLiterals.size(); i < i_end; ++ i) {
     Trace("minisat") << "Theory propagated: " << propagatedLiterals[i] << std::endl;
+    std::cout << "minisat " << "Theory propagated: " << propagatedLiterals[i] << std::endl;
     // multiple theories can propagate the same literal
     Lit p = propagatedLiterals[i];
     if (value(p) == l_Undef) {
@@ -1251,6 +1270,7 @@ void Solver::propagateTheory() {
     } else {
       if (value(p) == l_False) {
         Trace("minisat") << "Conflict in theory propagation" << std::endl;
+        std::cout << "minisat " << "Conflict in theory propagation" << std::endl;
         SatClause explanation_cl;
         d_proxy->explainPropagation(MinisatSatSolver::toSatLiteral(p),
                                     explanation_cl);
@@ -1485,6 +1505,7 @@ bool Solver::simplify()
 |________________________________________________________________________________________________@*/
 lbool Solver::search(int nof_conflicts)
 {
+  std::cout << "search" << std::endl;
   Assert(ok);
   int backtrack_level;
   int conflictC = 0;
@@ -1505,6 +1526,7 @@ lbool Solver::search(int nof_conflicts)
 
       if (decisionLevel() == 0)
       {
+        std::cout << "indeed unsat" << std::endl;
         if (needProof())
         {
           if (confl == CRef_Lazy)
@@ -1571,7 +1593,8 @@ lbool Solver::search(int nof_conflicts)
         learntsize_adjust_cnt = (int)learntsize_adjust_confl;
         max_learnts *= learntsize_inc;
 
-        if (verbosity >= 1)
+        // if (verbosity >= 1)
+        if(true)
           printf("| %9d | %7d %8d %8d | %8d %8d %6.0f | %6.3f %% |\n",
                  (int)conflicts,
                  (int)dec_vars
@@ -1729,7 +1752,9 @@ static double luby(double y, int x){
 // NOTE: assumptions passed in member-variable 'assumptions'.
 lbool Solver::solve_()
 {
+    std::cout << "begin Solver::solve_()" << std::endl;
     Trace("minisat") << "nvars = " << nVars() << std::endl;
+    std::cout << "minisat: " << "nvars = " << nVars() << std::endl;
 
     ScopedBool scoped_bool(minisat_busy, true);
 
@@ -1749,7 +1774,8 @@ lbool Solver::solve_()
     learntsize_adjust_cnt     = (int)learntsize_adjust_confl;
     lbool   status            = l_Undef;
 
-    if (verbosity >= 1){
+    // if (verbosity >= 1){
+    if(true){
         printf("============================[ Search Statistics ]==============================\n");
         printf("| Conflicts |          ORIGINAL         |          LEARNT          | Progress |\n");
         printf("|           |    Vars  Clauses Literals |    Limit  Clauses Lit/Cl |          |\n");
@@ -1769,7 +1795,8 @@ lbool Solver::solve_()
     if (!withinBudget(Resource::SatConflictStep))
       status = l_Undef;
 
-    if (verbosity >= 1)
+    // if (verbosity >= 1)
+      if (true)
         printf("===============================================================================\n");
 
 
@@ -1784,6 +1811,7 @@ lbool Solver::solve_()
     else if (status == l_False && d_conflict.size() == 0)
       ok = false;
 
+    std::cout << "end Solver::solve_()" << std::endl;
     return status;
 }
 

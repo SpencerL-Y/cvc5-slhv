@@ -1122,6 +1122,12 @@ libcvc5_add_sources(
   theory/sets/theory_sets_type_enumerator.h
   theory/sets/theory_sets_type_rules.cpp
   theory/sets/theory_sets_type_rules.h
+  theory/slhv/theory_slhv.h
+  theory/slhv/theory_slhv.cpp
+  theory/slhv/theory_slhv_type_rules.h
+  theory/slhv/theory_slhv_type_rules.cpp
+  theory/slhv/theory_slhv_rewriter.h
+  theory/slhv/theory_slhv_rewriter.cpp
   theory/shared_solver.cpp
   theory/shared_solver.h
   theory/shared_solver_distributed.cpp
@@ -1411,6 +1417,7 @@ set(KINDS_FILES
   ${PROJECT_SOURCE_DIR}/src/theory/datatypes/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/sep/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/sets/kinds
+  ${PROJECT_SOURCE_DIR}/src/theory/slhv/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/bags/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/strings/kinds
   ${PROJECT_SOURCE_DIR}/src/theory/quantifiers/kinds)

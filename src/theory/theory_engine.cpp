@@ -304,6 +304,8 @@ void TheoryEngine::interrupt() { d_interrupted = true; }
 void TheoryEngine::preRegister(TNode preprocessed) {
   Trace("theory") << "TheoryEngine::preRegister( " << preprocessed << ")"
                   << std::endl;
+  std::cout   << "TheoryEngine::preRegister( " << preprocessed << ")"
+                  << std::endl;
   d_preregisterQueue.push(preprocessed);
 
   if (!d_inPreregister) {
@@ -733,6 +735,7 @@ theory::TheoryId TheoryEngine::theoryExpPropagation(theory::TheoryId tid) const
 }
 
 bool TheoryEngine::presolve() {
+  std::cout << "start TheoryEngine::presolve()" << std::endl;
   // Reset the interrupt flag
   d_interrupted = false;
 
@@ -765,7 +768,7 @@ bool TheoryEngine::presolve() {
   {
     tem->presolve();
   }
-
+  std::cout << "end TheoryEngine::presolve()" << std::endl;
   // return whether we have a conflict
   return false;
 }/* TheoryEngine::presolve() */
@@ -1017,6 +1020,7 @@ bool TheoryEngine::markPropagation(TNode assertion, TNode originalAssertion, the
 
 void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theory::TheoryId toTheoryId, theory::TheoryId fromTheoryId) {
   Trace("theory::assertToTheory") << "TheoryEngine::assertToTheory(" << assertion << ", " << originalAssertion << "," << toTheoryId << ", " << fromTheoryId << ")" << endl;
+  std::cout << "TheoryEngine::assertToTheory(" << assertion << ", " << originalAssertion << "," << toTheoryId << ", " << fromTheoryId << ")" << endl; 
 
   Assert(toTheoryId != fromTheoryId);
   if (toTheoryId != THEORY_SAT_SOLVER
@@ -1204,6 +1208,8 @@ void TheoryEngine::assertFact(TNode literal)
         Node toAssert =
             polarity ? (Node)request.d_atom : request.d_atom.notNode();
         Trace("theory::atoms") << "TheoryEngine::assertFact(" << literal
+                               << "): sending requested " << toAssert << endl;
+        std::cout << "TheoryEngine::assertFact(" << literal
                                << "): sending requested " << toAssert << endl;
         assertToTheory(
             toAssert, literal, request.d_toTheory, THEORY_SAT_SOLVER);
