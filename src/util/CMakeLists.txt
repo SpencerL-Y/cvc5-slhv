@@ -48,6 +48,8 @@ libcvc5_add_sources(
   iand.h
   index.cpp
   index.h
+  intheap_value.cpp
+  intheap_value.h
   ostream_util.cpp
   ostream_util.h
   poly_util.cpp

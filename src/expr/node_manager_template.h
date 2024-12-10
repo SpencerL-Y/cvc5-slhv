@@ -458,6 +458,9 @@ class NodeManager
   /** Make the type of arrays with the given parameterization */
   TypeNode mkArrayType(TypeNode indexType, TypeNode constituentType);
 
+  /** Make the type of intheap with the given parameterization */
+  TypeNode mkIntHeapType(TypeNode addrType, TypeNode contentType);
+
   /** Make the type of set with the given parameterization */
   TypeNode mkSetType(TypeNode elementType);
 
@@ -1063,6 +1066,16 @@ inline TypeNode NodeManager::mkArrayType(TypeNode indexType,
   Trace("arrays") << "making array type " << indexType << " "
                   << constituentType << std::endl;
   return mkTypeNode(Kind::ARRAY_TYPE, indexType, constituentType);
+}
+
+
+inline TypeNode NodeManager::mkIntHeapType(TypeNode addrType, TypeNode contentType) {
+  Assert(!addrType.isNull()) << "unexpected NULL addr type";
+  Assert(!contentType.isNull()) << "unexpected NULL content type";
+  
+  Trace("slhv") << "making intheap type " << addrType << " "
+                  << contentType << std::endl;
+  return mkTypeNode(Kind::INTHEAP_TYPE, addrType, contentType);
 }
 
 inline TypeNode NodeManager::mkSetType(TypeNode elementType)
