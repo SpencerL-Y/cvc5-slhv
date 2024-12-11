@@ -1170,6 +1170,7 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
 void TheoryEngine::assertFact(TNode literal)
 {
   Trace("theory") << "TheoryEngine::assertFact(" << literal << ")" << endl;
+  std::cout << "TheoryEngine::assertFact(" << literal << ")" << endl;+
 
   // spendResource();
 
