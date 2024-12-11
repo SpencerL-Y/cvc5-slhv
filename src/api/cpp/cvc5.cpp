@@ -6369,12 +6369,28 @@ Term TermManager::mkSepNil(const Sort& sort)
   CVC5_API_TRY_CATCH_END;
 }
 
-Term TermManager::mkSLHVNil(const Sort& sort) {
-  // internal::Node res = d_nm->mkNullaryOperator(*sort.d_type, internal::Kind::SLHV_NIL);
+// SLHV
+Term TermManager::mkSLHVNil() {
+  CVC5_API_TRY_CATCH_BEGIN;
+  //////// all checks before this line
+  internal::TypeNode intType = d_nm->integerType();
+  internal::Node res = d_nm->mkNullaryOperator(intType, internal::Kind::SLHV_NIL);
+  (void)res.getType(true);
+  return Term(this, res);
+  ////////
+  CVC5_API_TRY_CATCH_END;
 }
 
 Term TermManager::mkSLHVEmp() {
-
+  CVC5_API_TRY_CATCH_BEGIN;
+  //////// all checks before this line
+  internal::TypeNode intType = d_nm->integerType();
+  internal::TypeNode intheapType = d_nm->mkIntHeapType(intType, intType);
+  internal::Node res = d_nm->mkNullaryOperator(intheapType, internal::Kind::SLHV_EMP);
+  (void)res.getType(true);
+  return Term(this, res);
+  ////////
+  CVC5_API_TRY_CATCH_END;
 }
 
 Term TermManager::mkString(const std::string& s, bool useEscSequences)
@@ -7081,6 +7097,8 @@ Term Solver::mkEmptyBag(const Sort& sort) const
 Term Solver::mkSepEmp() const { return d_tm.mkSepEmp(); }
 
 Term Solver::mkSepNil(const Sort& sort) const { return d_tm.mkSepNil(sort); }
+
+// SLHV
 
 Term Solver::mkString(const std::string& s, bool useEscSequences) const
 {

@@ -7,30 +7,40 @@ namespace cvc5::internal{
 namespace theory {
 namespace slhv {
 
-    TheorySLHV::TheorySLHV(Env& env, OutputChannel& out, Valuation valuation) : Theory(THEORY_SLHV, env, out, valuation) {
+    TheorySLHV::TheorySLHV(Env& env, OutputChannel& out, Valuation valuation) : 
+    Theory(THEORY_SLHV, env, out, valuation), 
+    d_rewriter(nodeManager())
+    {
 
     }
-    TheorySLHV::~TheorySLHV() {
+
+    TheorySLHV::~TheorySLHV() 
+    {
 
     }
 
-    TheoryRewriter* TheorySLHV::getTheoryRewriter() {
+    TheoryRewriter* TheorySLHV::getTheoryRewriter() 
+    {
+        return &d_rewriter;
+    }
+
+    ProofRuleChecker* TheorySLHV::getProofChecker() 
+    {
         return nullptr;
     }
 
-    ProofRuleChecker* TheorySLHV::getProofChecker() {
-        return nullptr;
-    }
-
-    bool TheorySLHV::needsEqualityEngine(EeSetupInfo& esi) {
+    bool TheorySLHV::needsEqualityEngine(EeSetupInfo& esi) 
+    {
         return true;
     }
 
-    void TheorySLHV::finishInit() {
+    void TheorySLHV::finishInit() 
+    {
 
     }
 
-    bool TheorySLHV::needsCheckLastEffort(){
+    bool TheorySLHV::needsCheckLastEffort()
+    {
         return true;
     }
 

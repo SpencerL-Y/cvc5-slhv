@@ -12,6 +12,8 @@ namespace slhv {
         Trace("slhv-postrewrite") << "slhv::postRewrite start " << node << std::endl;
 
         Trace("slhv-rewrite") << "slhv::rewrite : " << node << " -> " << node << std::endl;
+        std::cout << "slhv::postRewrite start " << node << std::endl;
+        std::cout << "slhv::rewrite : " << node << " -> " << node << std::endl;
         return RewriteResponse(REWRITE_DONE, node);
     }
 }

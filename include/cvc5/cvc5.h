@@ -4161,11 +4161,13 @@ class CVC5_EXPORT TermManager
    * @warning This function is experimental and may change in future versions.
    */
   Term mkSepNil(const Sort& sort);
+
+  // SLHV
   /**
    * Create an SLHV nil term.
    * @return The SLHV nil term.
    */
-  Term mkSLHVNil(const Sort& sort);
+  Term mkSLHVNil();
   /**
    * Create an SLHV emp term.
    * @return The SLHV emp term.

@@ -59,6 +59,7 @@ void SmtSolver::finishInit()
   for (theory::TheoryId id = theory::THEORY_FIRST; id < theory::THEORY_LAST;
        ++id)
   {
+    std::cout << "addTheory: " << id << std::endl;
     theory::TheoryConstructor::addTheory(d_theoryEngine.get(), id);
   }
   // Add the proof checkers for each theory

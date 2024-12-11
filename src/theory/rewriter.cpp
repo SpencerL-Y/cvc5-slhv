@@ -455,6 +455,9 @@ RewriteResponse Rewriter::preRewrite(theory::TheoryId theoryId,
     // tcpg if necessary and then convert to rewrite response.
     return processTrustRewriteResponse(theoryId, tresponse, true, tcpg);
   }
+  if(d_theoryRewriters[theoryId] == nullptr) {
+    std::cout << "theory rewritter null" << std::endl;
+  }
   return d_theoryRewriters[theoryId]->preRewrite(n);
 }
 

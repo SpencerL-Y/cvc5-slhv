@@ -257,7 +257,7 @@ void SubstitutionMap::eraseSubstitution(TNode x, bool invalidateCache)
   }
 }
 
-Node SubstitutionMap::apply(TNode t,
+Node SubstitutionMap:: apply(TNode t,
                             Rewriter* r,
                             std::set<TNode>* tracker,
                             const ShouldTraverseCallback* stc)
@@ -274,7 +274,6 @@ Node SubstitutionMap::apply(TNode t,
   // Perform the substitution
   Node result = internalSubstitute(t, d_substitutionCache, tracker, stc);
   Trace("substitution") << "SubstitutionMap::apply(" << t << ") => " << result << endl;
-
   if (r != nullptr)
   {
     Node orig = result;

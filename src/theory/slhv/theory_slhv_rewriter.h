@@ -22,6 +22,7 @@ class TheorySLHVRewriter : public TheoryRewriter
         RewriteResponse preRewrite(TNode node) override
         {
             Trace("slhv-prerewrite") << "slhv::preRewrite returnning" << node << std::endl;
+            std::cout << "slhv::preRewrite returnning" << node << std::endl;
             return RewriteResponse(REWRITE_DONE, node);
         }
 };

@@ -39,6 +39,8 @@ PreprocessingPassResult ApplySubsts::applyInternal(
   verbose(2) << "applying substitutions..." << std::endl;
   Trace("apply-substs") << "ApplySubsts::processAssertions(): "
                         << "applying substitutions" << std::endl;
+  std::cout << "ApplySubsts::processAssertions(): "
+                        << "applying substitutions" << std::endl;
   // TODO(#1255): Substitutions in incremental mode should be managed with a
   // proper data structure.
 
@@ -53,11 +55,15 @@ PreprocessingPassResult ApplySubsts::applyInternal(
     }
     Trace("apply-substs") << "applying to " << (*assertionsToPreprocess)[i]
                           << std::endl;
+    std::cout << "applying to " << (*assertionsToPreprocess)[i]
+                          << std::endl;
     d_preprocContext->spendResource(Resource::PreprocessStep);
     assertionsToPreprocess->replaceTrusted(
         i,
         tlsm.applyTrusted((*assertionsToPreprocess)[i], d_env.getRewriter()));
     Trace("apply-substs") << "  got " << (*assertionsToPreprocess)[i]
+                          << std::endl;
+    std::cout << "  got " << (*assertionsToPreprocess)[i]
                           << std::endl;
     // if rewritten to false, we are done
     if (assertionsToPreprocess->isInConflict())

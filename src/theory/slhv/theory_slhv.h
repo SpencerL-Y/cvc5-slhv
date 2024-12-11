@@ -30,8 +30,12 @@ class TheorySLHV : public Theory {
 
     //////  MAIN SOLVER
     bool needsCheckLastEffort() override;
-    
 
+    // theory plugin attrs
+    private: 
+    
+    TheorySLHVRewriter d_rewriter;
+    
 
 };
 }

@@ -3210,7 +3210,7 @@ enum ENUM(Kind)
    */
   EVALUE(SEP_WAND),
 
-  /* Separation Logic with Heap Variables ---------------------------------- */
+  /* SLHV: Separation Logic with Heap Variables ---------------------------------- */
 
   /**
    * SLHV nil.

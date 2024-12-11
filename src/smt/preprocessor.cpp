@@ -82,6 +82,9 @@ bool Preprocessor::process(preprocessing::AssertionPipeline& ap)
     ap.disableStoreSubstsInAsserts();
   }
 
+  for(auto as : ap) {
+    std::cout << as << std::endl;
+  }
   // process the assertions, return true if no conflict is discovered
   bool noConflict = d_processor.apply(ap);
 

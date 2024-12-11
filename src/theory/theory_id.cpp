@@ -46,6 +46,8 @@ const char* toString(TheoryId theoryId)
     case THEORY_DATATYPES: return "THEORY_DATATYPES"; break;
     case THEORY_SAT_SOLVER: return "THEORY_SAT_SOLVER"; break;
     case THEORY_SEP: return "THEORY_SEP"; break;
+    // SLHV
+    case THEORY_SLHV: return "THEORY_SLHV"; break;
     case THEORY_SETS: return "THEORY_SETS"; break;
     case THEORY_BAGS: return "THEORY_BAGS"; break;
     case THEORY_STRINGS: return "THEORY_STRINGS"; break;
@@ -75,6 +77,8 @@ std::string getStatsPrefix(TheoryId theoryId)
     case THEORY_ARRAYS: return "theory::arrays::"; break;
     case THEORY_DATATYPES: return "theory::datatypes::"; break;
     case THEORY_SEP: return "theory::sep::"; break;
+    // SLHV
+    case THEORY_SLHV: return "theory::slhv::"; break;
     case THEORY_SETS: return "theory::sets::"; break;
     case THEORY_BAGS: return "theory::bags::"; break;
     case THEORY_STRINGS: return "theory::strings::"; break;

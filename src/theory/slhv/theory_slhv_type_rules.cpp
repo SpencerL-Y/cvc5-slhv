@@ -82,8 +82,7 @@ TypeNode SLHVPtoTypeRule::computeType(NodeManager* NodeManager,
 
 TypeNode SLHVBlkTypeRule::preComputeType(NodeManager* nm, TNode n) 
 {
-    TypeNode intType = nm->integerType();
-    return nm->mkIntHeapType(intType, intType);
+    return nm->booleanType();
 }
 
 TypeNode SLHVBlkTypeRule::computeType(NodeManager* NodeManager, 
@@ -114,7 +113,7 @@ TypeNode SLHVBlkTypeRule::computeType(NodeManager* NodeManager,
             return TypeNode::null();
         }
     }
-    return NodeManager->mkIntHeapType(intType, intType);
+    return NodeManager->booleanType();
 }
 
 

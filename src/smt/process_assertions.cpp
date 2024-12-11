@@ -90,6 +90,7 @@ void ProcessAssertions::spendResource(Resource r)
 
 bool ProcessAssertions::apply(AssertionPipeline& ap)
 {
+  std::cout << "begin apply passes" << std::endl;
   Assert(d_preprocessingPassContext != nullptr);
   // Dump the assertions
   dumpAssertions("assertions::pre-everything", ap);
@@ -115,6 +116,7 @@ bool ProcessAssertions::apply(AssertionPipeline& ap)
 
   if (options().bv.bvGaussElim)
   {
+    std::cout << "bv-gauss" << std::endl;
     applyPass("bv-gauss", ap);
   }
 
@@ -127,11 +129,15 @@ bool ProcessAssertions::apply(AssertionPipeline& ap)
   Trace("smt-proc")
       << "ProcessAssertions::processAssertions() : pre-definition-expansion"
       << endl;
+  std::cout << "ProcessAssertions::processAssertions() : pre-definition-expansion"
+      << endl;
   // Apply substitutions first. If we are non-incremental, this has only the
   // effect of replacing defined functions with their definitions.
   // We do not call theory-specific expand definitions here, since we want
   // to give the opportunity to rewrite/preprocess terms before expansion.
+  std::cout << "begin apply-substs" << std::endl;
   applyPass("apply-substs", ap);
+  std::cout << "end apply-substs" << std::endl;
   Trace("smt-proc")
       << "ProcessAssertions::processAssertions() : post-definition-expansion"
       << endl;
@@ -165,6 +171,7 @@ bool ProcessAssertions::apply(AssertionPipeline& ap)
   }
 
   Trace("smt") << " assertions     : " << ap.size() << endl;
+  std::cout << " assertions     : " << ap.size() << endl;
 
   bool noConflict = true;
 
