@@ -458,6 +458,7 @@ class NodeManager
   /** Make the type of arrays with the given parameterization */
   TypeNode mkArrayType(TypeNode indexType, TypeNode constituentType);
 
+  // SLHV
   /** Make the type of intheap with the given parameterization */
   TypeNode mkIntHeapType(TypeNode addrType, TypeNode contentType);
 
@@ -1068,7 +1069,7 @@ inline TypeNode NodeManager::mkArrayType(TypeNode indexType,
   return mkTypeNode(Kind::ARRAY_TYPE, indexType, constituentType);
 }
 
-
+// SLHV
 inline TypeNode NodeManager::mkIntHeapType(TypeNode addrType, TypeNode contentType) {
   Assert(!addrType.isNull()) << "unexpected NULL addr type";
   Assert(!contentType.isNull()) << "unexpected NULL content type";

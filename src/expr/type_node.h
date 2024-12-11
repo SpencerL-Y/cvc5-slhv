@@ -465,6 +465,9 @@ class CVC5_EXPORT TypeNode
   /** Is this an array type? */
   bool isArray() const;
 
+  /** Is this an intheap type? */
+  bool isIntHeap() const;
+
   /** Is this a finite-field type? */
   bool isFiniteField() const;
 
@@ -954,6 +957,11 @@ inline bool TypeNode::isArray() const { return getKind() == Kind::ARRAY_TYPE; }
 inline bool TypeNode::isFiniteField() const
 {
   return getKind() == Kind::FINITE_FIELD_TYPE;
+}
+
+// SLHV
+inline bool TypeNode::isIntHeap() const {
+  return getKind() == Kind::INTHEAP_TYPE;
 }
 
 inline TypeNode TypeNode::getArrayIndexType() const {

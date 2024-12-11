@@ -28,7 +28,9 @@ class IntHeapEnumerator : public TypeEnumeratorBase<IntHeapEnumerator>
 
     Node operator*() override 
     {
-        return NodeManager::currentNM()->mkConst<IntHeapValue>(IntHeapValue(d_current_max_addr, d_current_max_content));
+        TNode addrInt = NodeManager::currentNM()->mkConstInt(d_current_max_addr);
+        TNode contentInt = NodeManager::currentNM()->mkConstInt(d_current_max_content);
+        return NodeManager::currentNM()->mkNode(Kind::SLHV_PTO, addrInt, contentInt);
     } 
 
     IntHeapEnumerator& operator++() override {
