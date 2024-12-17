@@ -1635,6 +1635,13 @@ bool Sort::isSet() const
   CVC5_API_TRY_CATCH_END;
 }
 
+bool Sort::isIntHeap() const
+{
+  CVC5_API_TRY_CATCH_BEGIN;
+  return d_type->isIntHeap();
+  CVC5_API_TRY_CATCH_END;
+}
+
 bool Sort::isBag() const
 {
   CVC5_API_TRY_CATCH_BEGIN;

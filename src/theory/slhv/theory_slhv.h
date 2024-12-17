@@ -62,7 +62,28 @@ class TheorySLHV : public Theory {
     /** The inference manager */
     TheoryInferenceManager d_im;
 
+    /** the list of facts*/
     NodeList d_theory_facts;
+    NodeSet d_heap_eqs;
+    NodeSet d_blks;
+    NodeSet d_atomic_hts;
+    NodeSet d_hts;
+    NodeSet d_pts;
+    NodeSet d_end_addresses;
+
+
+    // util functions to determine the type of formulas
+    // for literals:
+    bool isNot(Node f);
+    bool isBlk(Node f);
+    bool isHeapEquality(Node f);
+
+    // for terms:
+    bool isPt(Node t);
+    bool isHvar(Node t);
+    bool isEmp(Node t);
+    bool isDisju(Node t);
+    
 };
 }
 }

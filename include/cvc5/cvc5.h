@@ -655,6 +655,12 @@ class CVC5_EXPORT Sort
   bool isSet() const;
 
   /**
+   * Determine if this is a IntHeap sort
+   * @return True if the sort is a IntHeap sort.
+   */
+  bool isIntHeap() const;
+
+  /**
    * Determine if this is a Bag sort.
    * @return True if the sort is a Bag sort.
    */
