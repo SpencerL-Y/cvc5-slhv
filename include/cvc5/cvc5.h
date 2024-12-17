@@ -3831,6 +3831,8 @@ class CVC5_EXPORT TermManager
    * @return The array sort.
    */
   Sort mkArraySort(const Sort& indexSort, const Sort& elemSort);
+
+  Sort mkIntHeapSort(const Sort& locSort, const Sort& contentSort);
   /**
    * Create a bit-vector sort.
    * @param size The bit-width of the bit-vector sort.

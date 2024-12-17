@@ -5747,6 +5747,18 @@ Sort TermManager::mkArraySort(const Sort& indexSort, const Sort& elemSort)
   CVC5_API_TRY_CATCH_END;
 }
 
+// SLHV sort
+Sort TermManager::mkIntHeapSort(const Sort& locSort, const Sort& contentSort)
+{
+  CVC5_API_TRY_CATCH_BEGIN;
+  CVC5_API_TM_CHECK_SORT(locSort);
+  CVC5_API_TM_CHECK_SORT(contentSort);
+  //////// all checks before this line
+  return Sort(this, d_nm->mkIntHeapType(*locSort.d_type, *contentSort.d_type));
+  ////////
+  CVC5_API_TRY_CATCH_END;
+}
+
 Sort TermManager::mkBitVectorSort(uint32_t size)
 {
   CVC5_API_TRY_CATCH_BEGIN;

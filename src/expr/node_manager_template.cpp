@@ -228,6 +228,7 @@ TypeNode NodeManager::mkFloatingPointType(FloatingPointSize fs)
                                                       fs);
 }
 
+
 NodeManager::~NodeManager()
 {
   // Destroy skolem and bound var manager before cleaning up attributes and
