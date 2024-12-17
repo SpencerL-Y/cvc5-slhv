@@ -3213,15 +3213,6 @@ enum ENUM(Kind)
   /* SLHV: Separation Logic with Heap Variables ---------------------------------- */
 
   /**
-   * SLHV nil.
-   *
-   * - Create Term of this Kind with:
-   *
-   *   - Solver::mkSLHVNil()
-   *
-   */
-  EVALUE(SLHV_NIL),
-  /**
    * SLHV emp
    * 
    * - Create Term of this Kind with:

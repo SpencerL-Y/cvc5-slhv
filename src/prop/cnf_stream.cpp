@@ -218,6 +218,7 @@ SatLiteral CnfStream::newLiteral(TNode node,
   }
   // Here, you can have it
   Trace("cnf") << "newLiteral(" << node << ") => " << lit << "\n" << pop;
+  std::cout << "newLiteral(" << node << ") => " << lit << "\n" << pop;
   return lit;
 }
 

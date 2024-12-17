@@ -4167,7 +4167,7 @@ class CVC5_EXPORT TermManager
    * Create an SLHV nil term.
    * @return The SLHV nil term.
    */
-  Term mkSLHVNil();
+  Term mkSLHVHvar();
   /**
    * Create an SLHV emp term.
    * @return The SLHV emp term.

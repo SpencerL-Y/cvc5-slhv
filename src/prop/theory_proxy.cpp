@@ -188,7 +188,7 @@ void TheoryProxy::notifyAssertion(Node a,
                                   bool isLemma,
                                   bool local)
 {
-  std::cout << "TheoryProxy::notifyAssertion" << std::endl;
+  std::cout << "TheoryProxy::notifyAssertion " << a << std::endl;
   // ignore constants
   if (a.isConst())
   {
@@ -215,7 +215,7 @@ void TheoryProxy::notifyAssertion(Node a,
 
 void TheoryProxy::theoryCheck(theory::Theory::Effort effort) {
   Trace("theory-proxy") << "TheoryProxy: check " << effort << std::endl;
-  std::cout << "TheoryProxy: check " << effort << std::endl;
+  std::cout << "TheoryProxy: theoryCheck " << effort << std::endl;
   d_activatedSkDefs = false;
   // check with the preregistrar
   d_prr->check();
@@ -248,7 +248,7 @@ void TheoryProxy::theoryCheck(theory::Theory::Effort effort) {
     }
     // now, assert to theory engine
     Trace("prereg") << "assert: " << assertion << std::endl;
-    std::cout << "assert: " << assertion << "level: " << alevel << std::endl;
+    std::cout << "theoryEngine assertFact, assert: " << assertion << "level: " << alevel << std::endl;
     d_theoryEngine->assertFact(assertion);
     if (d_trackActiveSkDefs)
     {

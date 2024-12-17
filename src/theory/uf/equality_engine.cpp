@@ -482,6 +482,7 @@ bool EqualityEngine::assertPredicate(TNode t,
                                      unsigned pid)
 {
   Trace("equality") << d_name << "::eq::addPredicate(" << t << "," << (polarity ? "true" : "false") << ")" << std::endl;
+  std::cout << d_name << "::eq::addPredicate(" << t << "," << (polarity ? "true" : "false") << ")" << std::endl;
   Assert(t.getKind() != Kind::EQUAL) << "Use assertEquality instead";
   TNode b = polarity ? d_true : d_false;
   if (hasTerm(t) && areEqual(t, b))
@@ -499,6 +500,7 @@ bool EqualityEngine::assertEquality(TNode eq,
                                     unsigned pid)
 {
   Trace("equality") << d_name << "::eq::addEquality(" << eq << "," << (polarity ? "true" : "false") << ")" << std::endl;
+  std::cout  << d_name << "::eq::addEquality(" << eq << "," << (polarity ? "true" : "false") << ")" << std::endl;
   if (polarity) {
     // If two terms are already equal, don't assert anything
     if (hasTerm(eq[0]) && hasTerm(eq[1]) && areEqual(eq[0], eq[1])) {

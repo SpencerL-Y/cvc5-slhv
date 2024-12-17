@@ -13,22 +13,7 @@ namespace theory
 {
 namespace slhv
 {
-    
 
-
-TypeNode SLHVNilTypeRule::preComputeType(NodeManager* nm, TNode n) 
-{
-    return nm->integerType();
-}
-
-TypeNode SLHVNilTypeRule::computeType(NodeManager* NodeManager, 
-                                    TNode n,
-                                    bool check,
-                                    std::ostream* errOut)
-{
-    Assert(n.getKind() == Kind::SLHV_NIL);
-    return NodeManager->integerType();
-}
 
 
 TypeNode SLHVEmpTypeRule::preComputeType(NodeManager* nm, TNode n) 

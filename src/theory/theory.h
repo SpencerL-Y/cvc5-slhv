@@ -433,6 +433,9 @@ class Theory : protected EnvObj
     Trace("theory") << "Theory<" << getId() << ">::assertFact["
                     << context()->getLevel() << "](" << assertion << ", "
                     << (isPreregistered ? "true" : "false") << ")" << std::endl;
+    std::cout << "Theory<" << getId() << ">::assertFact["
+                    << context()->getLevel() << "](" << assertion << ", "
+                    << (isPreregistered ? "true" : "false") << ")" << std::endl;
     d_facts.push_back(Assertion(assertion, isPreregistered));
   }
 

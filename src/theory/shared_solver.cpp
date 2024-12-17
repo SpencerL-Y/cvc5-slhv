@@ -49,6 +49,7 @@ bool SharedSolver::needsEqualityEngine(theory::EeSetupInfo& esi)
 void SharedSolver::preRegister(TNode atom)
 {
   Trace("theory") << "SharedSolver::preRegister atom " << atom << std::endl;
+  std::cout  << "SharedSolver::preRegister atom " << atom << std::endl;
   // This method uses two different implementations for preregistering terms,
   // which depends on whether sharing is enabled.
   // If sharing is disabled, we use PreRegisterVisitor, which keeps a global

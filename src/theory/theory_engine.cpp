@@ -80,6 +80,7 @@ namespace theory {
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_ARRAYS)    \
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_DATATYPES) \
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_SEP)       \
+  CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_SLHV)      \
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_SETS)      \
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_BAGS)      \
   CVC5_FOR_EACH_THEORY_STATEMENT(cvc5::internal::theory::THEORY_STRINGS)   \
@@ -400,6 +401,7 @@ void TheoryEngine::printAssertions(const char* tag) {
  * @param effort the effort level to use
  */
 void TheoryEngine::check(Theory::Effort effort) {
+  std::cout << "TheoryEngine::check" << std::endl;
   // spendResource();
 
   // Reset the interrupt flag
@@ -435,6 +437,7 @@ void TheoryEngine::check(Theory::Effort effort) {
     d_lemmasAdded = false;
 
     Trace("theory") << "TheoryEngine::check(" << effort << "): d_factsAsserted = " << (d_factsAsserted ? "true" : "false") << endl;
+    std::cout  << "TheoryEngine::check(" << effort << "): d_factsAsserted = " << (d_factsAsserted ? "true" : "false") << endl;
 
     // If in full effort, we have a fake new assertion just to jumpstart the checking
     if (Theory::fullEffort(effort)) {
@@ -455,6 +458,7 @@ void TheoryEngine::check(Theory::Effort effort) {
     while (d_factsAsserted && !d_inConflict && !d_lemmasAdded) {
 
       Trace("theory") << "TheoryEngine::check(" << effort << "): running check" << endl;
+      std::cout << "TheoryEngine::check(" << effort << "): running check" << endl; 
 
       Trace("theory::assertions") << endl;
       if (TraceIsOn("theory::assertions")) {
@@ -472,10 +476,14 @@ void TheoryEngine::check(Theory::Effort effort) {
       d_factsAsserted = false;
 
       // Do the checking
+      std::cout << "do the checking" << std::endl;
+
       CVC5_FOR_EACH_THEORY;
+      
+      std::cout << "do the checking end" << std::endl;
 
       Trace("theory") << "TheoryEngine::check(" << effort << "): running propagation after the initial check" << endl;
-
+      std::cout << "TheoryEngine::check(" << effort << "): running propagation after the initial check" << endl;
       // We are still satisfiable, propagate as much as possible
       propagate(effort);
 
@@ -616,6 +624,7 @@ void TheoryEngine::check(Theory::Effort effort) {
 
 void TheoryEngine::propagate(Theory::Effort effort)
 {
+  std::cout << "begin TheoryEngine::propagate" << std::endl;
   // Reset the interrupt flag
   d_interrupted = false;
 
@@ -1042,8 +1051,10 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
   // If sharing is disabled, things are easy
   if (!logicInfo().isSharingEnabled())
   {
+    std::cout << "assertToTheory: sharing not enabled" << std::endl;
     Assert(assertion == originalAssertion);
     if (fromTheoryId == THEORY_SAT_SOLVER) {
+      std::cout << "from THEORY_SAT_SOVLER" << std::endl;
       // Send to the apropriate theory
       theory::Theory* toTheory = theoryOf(toTheoryId);
       // We assert it, and we know it's preregistereed
@@ -1051,6 +1062,7 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
       // Mark that we have more information
       d_factsAsserted = true;
     } else {
+      std::cout << "to THEORY_SAT_SOVLER" << std::endl;
       Assert(toTheoryId == THEORY_SAT_SOLVER);
       // Check for propositional conflict
       bool value;
@@ -1074,10 +1086,12 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
   TheoryId toTheoryIdProp = theoryExpPropagation(toTheoryId);
   // If sending to the shared solver, it's also simple
   if (toTheoryId == THEORY_BUILTIN) {
+    std::cout << "to THEORY_BUILTIN" << std::endl;
     if (markPropagation(
             assertion, originalAssertion, toTheoryIdProp, fromTheoryId))
     {
       // assert to the shared solver
+      std::cout << "assert to the shared solver" << std::endl;
       bool polarity = assertion.getKind() != Kind::NOT;
       TNode atom = polarity ? assertion : assertion[0];
       d_sharedSolver->assertShared(atom, polarity, assertion);
@@ -1088,6 +1102,7 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
   // Things from the SAT solver are already normalized, so they go
   // directly to the apropriate theory
   if (fromTheoryId == THEORY_SAT_SOLVER) {
+    std::cout << "from THEORY_SAT_SOLVER" << std::endl;
     // We know that this is normalized, so just send it off to the theory
     if (markPropagation(
             assertion, originalAssertion, toTheoryIdProp, fromTheoryId))
@@ -1106,8 +1121,10 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
   // Propagations to the SAT solver are just enqueued for pickup by
   // the SAT solver later
   if (toTheoryId == THEORY_SAT_SOLVER) {
+    std::cout << "to THEORY_SAT_SOLVER" << std::endl;
     Assert(toTheoryIdProp == toTheoryId);
     if (markPropagation(assertion, originalAssertion, toTheoryId, fromTheoryId)) {
+      std::cout << "propagate to sat solver" << std::endl;
       // Enqueue for propagation to the SAT solver
       d_propagatedLiterals.push_back(assertion);
       // Check for propositional conflicts
@@ -1115,6 +1132,9 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
       if (d_propEngine->hasValue(assertion, value) && !value) {
         Trace("theory::propagate")
             << "TheoryEngine::assertToTheory(" << assertion << ", "
+            << toTheoryId << ", " << fromTheoryId << "): conflict (sharing)"
+            << endl;
+        std::cout << "TheoryEngine::assertToTheory(" << assertion << ", "
             << toTheoryId << ", " << fromTheoryId << "): conflict (sharing)"
             << endl;
         Trace("dtview::conflict")
@@ -1170,7 +1190,7 @@ void TheoryEngine::assertToTheory(TNode assertion, TNode originalAssertion, theo
 void TheoryEngine::assertFact(TNode literal)
 {
   Trace("theory") << "TheoryEngine::assertFact(" << literal << ")" << endl;
-  std::cout << "TheoryEngine::assertFact(" << literal << ")" << endl;+
+  std::cout << "TheoryEngine::assertFact(" << literal << ")" << endl;
 
   // spendResource();
 

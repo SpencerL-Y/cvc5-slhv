@@ -256,7 +256,7 @@ void PropEngine::assertInternal(theory::InferenceId id,
                                 bool input,
                                 ProofGenerator* pg)
 {
-  std::cout << "begin assertInternal()" << std::endl;
+  std::cout << "begin assertInternal() " << node << std::endl;
   bool addAssumption = false;
   if (isProofEnabled())
   {

@@ -325,7 +325,6 @@ const static std::unordered_map<Kind, std::pair<internal::Kind, std::string>>
         KIND_ENUM(Kind::SEP_STAR, internal::Kind::SEP_STAR),
         KIND_ENUM(Kind::SEP_WAND, internal::Kind::SEP_WAND),
         /* SLHV ------------------------------------------------------------- */
-        KIND_ENUM(Kind::SLHV_NIL, internal::Kind::SLHV_NIL),
         KIND_ENUM(Kind::SLHV_EMP, internal::Kind::SLHV_EMP),
         KIND_ENUM(Kind::SLHV_DISJU, internal::Kind::SLHV_DISJU),
         KIND_ENUM(Kind::SLHV_PTO, internal::Kind::SLHV_PTO),
@@ -736,7 +735,6 @@ const static std::unordered_map<internal::Kind,
         {internal::Kind::SEP_STAR, Kind::SEP_STAR},
         {internal::Kind::SEP_WAND, Kind::SEP_WAND},
         /* SLHV ------------------------------------------------ */
-        {internal::Kind::SLHV_NIL, Kind::SLHV_NIL},
         {internal::Kind::SLHV_EMP, Kind::SLHV_EMP},
         {internal::Kind::SLHV_PTO, Kind::SLHV_PTO},
         {internal::Kind::SLHV_DISJU, Kind::SLHV_DISJU},
@@ -6370,16 +6368,7 @@ Term TermManager::mkSepNil(const Sort& sort)
 }
 
 // SLHV
-Term TermManager::mkSLHVNil() {
-  CVC5_API_TRY_CATCH_BEGIN;
-  //////// all checks before this line
-  internal::TypeNode intType = d_nm->integerType();
-  internal::Node res = d_nm->mkNullaryOperator(intType, internal::Kind::SLHV_NIL);
-  (void)res.getType(true);
-  return Term(this, res);
-  ////////
-  CVC5_API_TRY_CATCH_END;
-}
+
 
 Term TermManager::mkSLHVEmp() {
   CVC5_API_TRY_CATCH_BEGIN;
