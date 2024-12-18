@@ -985,6 +985,9 @@ enum class InferenceId
   PARTITION_GENERATOR_PARTITION,
   // From a plugin
   PLUGIN_LEMMA,
+
+  //-------------------------------------- slhv theory
+  SLHV_ENDADDR_ORDER,
   //-------------------------------------- unknown
   UNKNOWN
 };

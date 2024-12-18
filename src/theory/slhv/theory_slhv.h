@@ -14,6 +14,9 @@
 #include "context/cdhashset.h"
 #include "context/cdlist.h"
 #include "context/cdqueue.h"
+
+#include "util/rational.h"
+
 namespace cvc5::internal {
 namespace theory{
 namespace slhv {
@@ -64,25 +67,41 @@ class TheorySLHV : public Theory {
 
     /** the list of facts*/
     NodeList d_theory_facts;
+    /** other nodes infos */
     NodeSet d_heap_eqs;
     NodeSet d_blks;
     NodeSet d_atomic_hts;
     NodeSet d_hts;
     NodeSet d_pts;
     NodeSet d_end_addresses;
+    NodeSet d_undefs;
+    /** a vector of endAddress pairs */
+    std::vector<std::pair<Node, Node>> d_EAPairs;
 
 
     // util functions to determine the type of formulas
     // for literals:
     bool isNot(Node f);
     bool isBlk(Node f);
+    bool isUndef(Node f);
     bool isHeapEquality(Node f);
+    bool isPostiveLiteral(Node f);
 
     // for terms:
     bool isPt(Node t);
     bool isHvar(Node t);
     bool isEmp(Node t);
     bool isDisju(Node t);
+    bool isHt(Node t);
+    bool isAtomicHt(Node t);
+
+
+    // preprocessing
+    void extractHeapTerms(Node t);
+    void classifyFormulas(Node f);
+    void collectEndAddresses();
+
+
     
 };
 }

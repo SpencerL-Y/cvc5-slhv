@@ -1284,6 +1284,7 @@ bool TheoryEngine::propagate(TNode literal, theory::TheoryId theory) {
   {
     // Just send off to the SAT solver
     Assert(d_propEngine->isSatLiteral(literal));
+    std::cout << "is Sat Literal: " << d_propEngine->isSatLiteral(literal) << std::endl;
     assertToTheory(literal, literal, /* to */ THEORY_SAT_SOLVER, /* from */ theory);
   }
 
