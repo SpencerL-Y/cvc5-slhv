@@ -13,6 +13,7 @@ namespace slhv {
           d_state(env, valuation),
           d_im(env, *this, d_state, getStatsPrefix(THEORY_SLHV)),
           d_theory_facts(context()),
+          d_explain_facts(context()),
           d_heap_eqs(context()),
           d_blks(context()),
           d_atomic_hts(context()),
@@ -50,6 +51,28 @@ namespace slhv {
 
     }
 
+    ////// THEORY PROPAGATION
+
+
+    TrustNode TheorySLHV::explain(TNode literal)
+    {
+        std::cout << "TheorySLHV::explain(" << literal << ")" << std::endl;
+        if(this->d_explain_facts.find(literal) != this->d_explain_facts.end()) 
+        {
+            std::cout << "explanation exists" << std::endl;
+            Node exp_node = this->d_explain_facts[literal];
+            // explaination exists
+            TrustNode exp = TrustNode::mkTrustPropExp(literal, exp_node, nullptr);
+            // this->d_explain_facts.erase(literal);
+            return exp;
+        } else {
+            std::cout << "explanation does not exist" << std::endl;
+            return this->d_im.explainLit(literal);
+        }
+    }
+
+    ////// MAIN CHECK
+
     bool TheorySLHV::needsCheckLastEffort()
     {
         return true;
@@ -58,6 +81,7 @@ namespace slhv {
     void TheorySLHV::postCheck(Effort level)
     {
         std::cout << "begin postCheck of theory SLHV !!!!" << std::endl;
+        this->printStoredContent();
         if(level > EFFORT_STANDARD) 
         {
             std::cout << "this is final check" << std::endl;
@@ -84,9 +108,9 @@ namespace slhv {
         std::cout << "begin notifyFact of theory SLHV !!!" << std::endl;
         std::cout << "atom: " << atom << " fact: " << fact << std::endl;
         this->d_theory_facts.push_back(fact);
-        if(this->isNot(fact)) 
+        if(this->isNotHeapLit(fact)) 
         {
-            std::cout << "negative literal" << std::endl;
+            std::cout << "negative heap literal: " << fact << std::endl;
         }
         else 
         {
@@ -98,10 +122,16 @@ namespace slhv {
 
             // preRegister formulas induced by the endAddresses
             NodeManager* nm = nodeManager();
-            for(auto pair : this->d_EAPairs)
+            for(Node blk : this->d_blks)
             {
-                Node ea_constraint = nm->mkNode(Kind::LT, {pair.first, pair.second});
-                this->d_inferManager->propagateLit(ea_constraint);
+                Node blk_start = blk[1];
+                Node blk_end = blk[2];
+                Node ea_constraint = nm->mkNode(Kind::LT, {blk_start, blk_end});
+                std::cout << "SLHV notifyFact: ensureLiteal" << std::endl;
+                Node literalized_ea = this->d_valuation.ensureLiteral(ea_constraint);
+                // link the reason for explain
+                this->d_explain_facts[literalized_ea] = blk;
+                this->d_inferManager->propagateLit(literalized_ea);
             }
         }
     }
@@ -140,7 +170,17 @@ namespace slhv {
 
     bool TheorySLHV::isPostiveLiteral(Node f)
     {
-        return (this->isBlk(f) || this->isUndef(f) || this->isHeapEquality(f));
+        return (!this->isNot(f));
+    }
+
+    bool TheorySLHV::isPosHeapLit(Node f)
+    {
+        return (this->isBlk(f) || this->isHeapEquality(f) || this->isUndef(f));
+    }
+
+    bool TheorySLHV::isNotHeapLit(Node f)
+    {
+        return (this->isNot(f) && this->isPosHeapLit(f[0]));
     }
 
     // for terms:
@@ -223,7 +263,7 @@ namespace slhv {
         } else {
             if(!this->isNot(t))
             {
-                std::cout << "ERROR: fact is not literal" << std::endl;
+                std::cout << "ERROR: fact is not literal: " << t << std::endl;
             }
         }
     }
@@ -239,7 +279,6 @@ namespace slhv {
             std::cout << "startAddr: " << startAddr  <<  " endAddr: " << endAddr << std::endl;
             this->d_end_addresses.insert(startAddr);
             this->d_end_addresses.insert(endAddr);
-            this->d_EAPairs.push_back({startAddr, endAddr});
         }
         for(Node f : this->d_pts)
         { 
@@ -248,10 +287,33 @@ namespace slhv {
             std::cout << "startAddr:  " << startAddr << " endAddr: " << endAddr << std::endl;    
             this->d_end_addresses.insert(startAddr);
             this->d_end_addresses.insert(endAddr);
-            this->d_EAPairs.push_back({startAddr, endAddr});
         }
     }
 
+
+    // for debugging
+    void TheorySLHV::printStoredContent()
+    {
+        std::cout << "===== current facts begin =====" << std::endl;
+        std::cout << "===== Facts" << std::endl;
+        this->printFacts(std::cout);
+        std::cout << "===== HEQs:" << std::endl;
+        for(Node heq : this->d_heap_eqs)
+        {
+            std::cout << heq << std::endl;
+        }
+        std::cout << "===== BLKs:" << std::endl;
+        for(Node blk : this->d_blks)
+        {
+            std::cout << blk << std::endl;
+        }
+        std::cout << "===== HTs" << std::endl;
+        for(Node ht : this->d_hts)
+        {
+            std::cout << ht << std::endl;
+        }
+        std::cout << "===== current facts end =====" << std::endl;
+    }
 }
 }
 }

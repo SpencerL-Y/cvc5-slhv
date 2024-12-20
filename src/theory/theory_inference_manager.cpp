@@ -384,7 +384,7 @@ bool TheoryInferenceManager::assertInternalFact(TNode atom,
   return processInternalFact(atom, pol, id, ProofRule::ASSUME, exp, {}, pg);
 }
 
-bool TheoryInferenceManager::processInternalFact(TNode atom,
+bool TheoryInferenceManager::           processInternalFact(TNode atom,
                                                  bool pol,
                                                  InferenceId iid,
                                                  ProofRule id,

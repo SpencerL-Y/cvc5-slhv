@@ -40,7 +40,9 @@ class TheorySLHV : public Theory {
 
     std::string identify() const override { return std::string("TheorySLHV"); }
 
+    ////// FOR PROPAGATION
 
+    TrustNode explain(TNode literal) override;
 
     //////  MAIN SOLVER
 
@@ -67,6 +69,8 @@ class TheorySLHV : public Theory {
 
     /** the list of facts*/
     NodeList d_theory_facts;
+    /** the set of facts as explaination */
+    NodeNodeMap d_explain_facts;
     /** other nodes infos */
     NodeSet d_heap_eqs;
     NodeSet d_blks;
@@ -75,8 +79,6 @@ class TheorySLHV : public Theory {
     NodeSet d_pts;
     NodeSet d_end_addresses;
     NodeSet d_undefs;
-    /** a vector of endAddress pairs */
-    std::vector<std::pair<Node, Node>> d_EAPairs;
 
 
     // util functions to determine the type of formulas
@@ -86,6 +88,8 @@ class TheorySLHV : public Theory {
     bool isUndef(Node f);
     bool isHeapEquality(Node f);
     bool isPostiveLiteral(Node f);
+    bool isPosHeapLit(Node f);
+    bool isNotHeapLit(Node f);
 
     // for terms:
     bool isPt(Node t);
@@ -95,14 +99,14 @@ class TheorySLHV : public Theory {
     bool isHt(Node t);
     bool isAtomicHt(Node t);
 
-
     // preprocessing
     void extractHeapTerms(Node t);
     void classifyFormulas(Node f);
     void collectEndAddresses();
 
+    // for debugging
+    void printStoredContent();
 
-    
 };
 }
 }
