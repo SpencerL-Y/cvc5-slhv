@@ -987,7 +987,7 @@ enum class InferenceId
   PLUGIN_LEMMA,
 
   //-------------------------------------- slhv theory
-  SLHV_ENDADDR_ORDER,
+  SLHV_LEVEL_CONFLICT,
   //-------------------------------------- unknown
   UNKNOWN
 };

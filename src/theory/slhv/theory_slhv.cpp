@@ -3,6 +3,8 @@
 #include "theory/slhv/theory_slhv.h"
 
 
+#include "expr/skolem_manager.h"
+
 namespace cvc5::internal{
 namespace theory {
 namespace slhv {
@@ -13,7 +15,6 @@ namespace slhv {
           d_state(env, valuation),
           d_im(env, *this, d_state, getStatsPrefix(THEORY_SLHV)),
           d_theory_facts(context()),
-          d_explain_facts(context()),
           d_heap_eqs(context()),
           d_blks(context()),
           d_atomic_hts(context()),
@@ -51,33 +52,27 @@ namespace slhv {
 
     }
 
-    ////// THEORY PROPAGATION
+    //// THEORY PROPAGATION
 
 
-    TrustNode TheorySLHV::explain(TNode literal)
-    {
-        std::cout << "TheorySLHV::explain(" << literal << ")" << std::endl;
-        if(this->d_explain_facts.find(literal) != this->d_explain_facts.end()) 
-        {
-            std::cout << "explanation exists" << std::endl;
-            Node exp_node = this->d_explain_facts[literal];
-            // explaination exists
-            TrustNode exp = TrustNode::mkTrustPropExp(literal, exp_node, nullptr);
-            // this->d_explain_facts.erase(literal);
-            return exp;
-        } else {
-            std::cout << "explanation does not exist" << std::endl;
-            return this->d_im.explainLit(literal);
-        }
-    }
+    // TrustNode TheorySLHV::explain(TNode literal)
+    // {
+    //     std::cout << "TheorySLHV::explain(" << literal << ")" << std::endl;
+    //     if(this->d_explain_facts.find(literal) != this->d_explain_facts.end()) 
+    //     {
+    //         std::cout << "explanation exists" << std::endl;
+    //         Node exp_node = this->d_explain_facts[literal];
+    //         // explaination exists
+    //         TrustNode exp = TrustNode::mkTrustPropExp(literal, exp_node, nullptr);
+    //         // this->d_explain_facts.erase(literal);
+    //         return exp;
+    //     } else {
+    //         std::cout << "explanation does not exist" << std::endl;
+    //         return this->d_im.explainLit(literal);
+    //     }
+    // }
 
     ////// MAIN CHECK
-
-    bool TheorySLHV::needsCheckLastEffort()
-    {
-        return true;
-    }
-    
     void TheorySLHV::postCheck(Effort level)
     {
         std::cout << "begin postCheck of theory SLHV !!!!" << std::endl;
@@ -98,8 +93,22 @@ namespace slhv {
                 std::cout << "aht: " << aht << std::endl;
             }
         } else {
+            std::cout << "this is level check" << std::endl;
+            for(auto f : this->d_theory_facts) 
+            {
+                std::cout << "fact: " << f << std::endl;
+            }
             std::cout << "this is effort standard" << std::endl;
+            InferenceId cause = InferenceId::SLHV_LEVEL_CONFLICT;
+            NodeManager* nm = nodeManager();
+            std::vector<Node> unsat_literals;
+            for(auto f : this->d_theory_facts) {
+                unsat_literals.push_back(f);
+            }
+            Node unsat_core = nm->mkAnd(unsat_literals);
+            this->getOutputChannel().conflict(unsat_core, cause);
         }
+
     }
 
     /** Notify fact */
@@ -111,6 +120,7 @@ namespace slhv {
         if(this->isNotHeapLit(fact)) 
         {
             std::cout << "negative heap literal: " << fact << std::endl;
+            // this->reduceNotHeapLitAndPropagate(fact);
         }
         else 
         {
@@ -127,15 +137,48 @@ namespace slhv {
                 Node blk_start = blk[1];
                 Node blk_end = blk[2];
                 Node ea_constraint = nm->mkNode(Kind::LT, {blk_start, blk_end});
-                std::cout << "SLHV notifyFact: ensureLiteal" << std::endl;
-                Node literalized_ea = this->d_valuation.ensureLiteral(ea_constraint);
-                // link the reason for explain
-                this->d_explain_facts[literalized_ea] = blk;
-                this->d_inferManager->propagateLit(literalized_ea);
             }
         }
     }
 
+    ////// REDUCER
+
+    void TheorySLHV::reduceNotHeapLitAndPropagate(Node not_heap_lit)
+    {
+        if(!this->isNot(not_heap_lit))
+        {
+            std::cout << "ERROR: not a not heap lit" << std::endl;
+        } else {
+            NodeManager* nm = nodeManager();
+            SkolemManager* sm = nm->getSkolemManager();
+            Node negated_heap_lit = not_heap_lit[0];
+            if(this->isBlk(negated_heap_lit)) 
+            {
+                Node negated_inner = negated_heap_lit[0];
+                Node skolemized_x = sm->mkDummySkolem("x", nm->integerType());
+                Node skolemized_hvar = sm->mkDummySkolem("h", nm->mkIntHeapType(nm->integerType(), nm->integerType()));
+                Node skolemized_data = sm->mkDummySkolem("d", nm->integerType());
+                Node ht = negated_inner[0];
+                Node it1 = negated_inner[1];
+                Node it2 = negated_inner[2];
+
+                Node undefine_branch = nm->mkNode(Kind::SLHV_UNDEF, {ht});
+                Node order_branch = nm->mkNode(Kind::GT, {it1, it2});
+
+                Node empty_it = nm->mkNode(Kind::EQUAL, {it1, it2});
+                Node nonempty_ht_lhs = ht;
+                Node nonempty_ht_rhs_pt = nm->mkNode(Kind::SLHV_PTO, {skolemized_x, skolemized_data});
+                Node nonempty_ht_rhs_h = skolemized_hvar;
+                Node nonempty_ht_rhs = nm->mkNode(Kind::SLHV_DISJU, {nonempty_ht_rhs_h, nonempty_ht_rhs_pt});
+                Node non_empty_ht_branch = nm->mkNode(Kind::EQUAL, {nonempty_ht_lhs, nonempty_ht_rhs});
+                Node translated = nm->mkNode(Kind::OR, {undefine_branch, order_branch, non_empty_ht_branch});
+            } else {
+                std::cout << "ERROR: NotHeapLit not supported" << std::endl;
+            }
+        }
+    }
+
+    ////// UTILITIES
     // util functions to determine the type of formulas
     // for literals:
     bool TheorySLHV::isNot(Node f)

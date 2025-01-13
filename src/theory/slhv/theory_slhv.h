@@ -40,21 +40,17 @@ class TheorySLHV : public Theory {
 
     std::string identify() const override { return std::string("TheorySLHV"); }
 
-    ////// FOR PROPAGATION
+    // ////// FOR PROPAGATION
 
-    TrustNode explain(TNode literal) override;
+    // TrustNode explain(TNode literal) override;
 
     //////  MAIN SOLVER
-
-    /** Do we need a check call at last call effort? */
-    bool needsCheckLastEffort() override;
-    
     /** Post-check, called after the fact queue of the theory is processed. */
     void postCheck(Effort level) override;
 
     /** Notify fact */
     void notifyFact(TNode atom, bool pol, TNode fact, bool isInternal) override;
-        
+         
 
 
     // theory plugin attrs
@@ -69,8 +65,6 @@ class TheorySLHV : public Theory {
 
     /** the list of facts*/
     NodeList d_theory_facts;
-    /** the set of facts as explaination */
-    NodeNodeMap d_explain_facts;
     /** other nodes infos */
     NodeSet d_heap_eqs;
     NodeSet d_blks;
@@ -79,8 +73,11 @@ class TheorySLHV : public Theory {
     NodeSet d_pts;
     NodeSet d_end_addresses;
     NodeSet d_undefs;
+    
+    ////// REDUCER
+    void reduceNotHeapLitAndPropagate(Node notHeapLit);
 
-
+    ////// UTILITIES
     // util functions to determine the type of formulas
     // for literals:
     bool isNot(Node f);
